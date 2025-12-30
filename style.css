@@ -1,210 +1,413 @@
-/* --- AYARLAR VE RENKLER --- */
-        :root {
-            --bg-color: #111111;
-            --card-bg: #1a1a1a;
-            --text-main: #ffffff;
-            --text-secondary: #a0a0a0;
-            --accent: #5865F2; /* Discord Mavisi */
-            --gradient: linear-gradient(45deg, #5865F2, #8A2BE2);
-        }
+/* --- GENEL AYARLAR --- */
+:root {
+    --bg-dark: #0f1115;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --primary: #5865F2; /* Discord Mavisi */
+    --accent: #00c6ff; /* Neon Mavi */
+    --secondary: #ff0055; /* Neon Pembe */
+    --text-main: #ffffff;
+    --text-gray: #a0a0a0;
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
 
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.6;
-        }
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    overflow-x: hidden;
+}
 
-        /* --- HEADER & NAV --- */
-        header {
-            padding: 20px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(17, 17, 17, 0.9);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid #222;
-        }
+/* --- HAREKETLİ ARKA PLAN --- */
+.bg-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: radial-gradient(circle at 10% 20%, rgba(88, 101, 242, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 0, 85, 0.1) 0%, transparent 40%);
+    z-index: -1;
+}
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+/* --- HEADER --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 8%;
+    background: rgba(15, 17, 21, 0.8);
+    backdrop-filter: blur(10px);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
 
-        nav a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            margin-left: 25px;
-            transition: 0.3s;
-        }
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
 
-        nav a:hover {
-            color: var(--text-main);
-        }
+.nav-menu a {
+    color: var(--text-gray);
+    text-decoration: none;
+    margin-left: 30px;
+    font-weight: 500;
+    transition: 0.3s;
+    font-size: 0.95rem;
+}
 
-        /* --- HERO BÖLÜMÜ (GİRİŞ) --- */
-        .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-        }
+.nav-menu a:hover {
+    color: var(--primary);
+    text-shadow: 0 0 10px rgba(88, 101, 242, 0.5);
+}
 
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid var(--accent);
-            margin-bottom: 20px;
-            object-fit: cover;
-            box-shadow: 0 0 30px rgba(88, 101, 242, 0.4);
-        }
+/* --- HERO BÖLÜMÜ --- */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 20px;
+    margin-top: 40px;
+}
 
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
-        }
+.img-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 25px;
+}
 
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin-bottom: 30px;
-        }
+.profile-img {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary);
+    box-shadow: 0 0 30px rgba(88, 101, 242, 0.4);
+    transition: transform 0.3s;
+}
 
-        .typewriter {
-            color: var(--accent);
-            font-weight: bold;
-        }
+.profile-img:hover {
+    transform: scale(1.05);
+}
 
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background: var(--gradient);
-            color: white;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-            transition: transform 0.2s;
-        }
+.status-badge {
+    position: absolute;
+    bottom: 10px;
+    right: 0;
+    background: #23272a;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    border: 1px solid var(--primary);
+    color: var(--text-main);
+}
 
-        .btn:hover {
-            transform: translateY(-5px);
-        }
+h1 {
+    font-size: 3.5rem;
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
 
-        /* --- YETENEKLER --- */
-        .section {
-            padding: 80px 50px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+.gradient-text {
+    background: linear-gradient(45deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
-        .section-title {
-            font-size: 2rem;
-            margin-bottom: 40px;
-            text-align: center;
-        }
+.typing-container {
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin-bottom: 20px;
+    font-weight: 600;
+    height: 30px;
+}
 
-        .skills-grid {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
+.cursor {
+    animation: blink 1s infinite;
+}
 
-        .skill-tag {
-            background: var(--card-bg);
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 1px solid #333;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-        /* --- PROJELER --- */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
+.hero-text {
+    max-width: 600px;
+    margin: 0 auto 30px;
+    color: var(--text-gray);
+    line-height: 1.6;
+}
 
-        .project-card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 25px;
-            border: 1px solid #333;
-            transition: 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
 
-        .project-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--accent);
-        }
+.btn {
+    padding: 12px 30px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
 
-        .project-title {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: var(--text-main);
-        }
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 0 20px rgba(88, 101, 242, 0.3);
+}
 
-        .project-desc {
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            font-size: 0.95rem;
-        }
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 30px rgba(88, 101, 242, 0.6);
+}
 
-        .project-links a {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: bold;
-            margin-right: 15px;
-        }
+.btn-secondary {
+    background: transparent;
+    border: 2px solid var(--text-gray);
+    color: var(--text-main);
+}
 
-        /* --- FOOTER --- */
-        footer {
-            text-align: center;
-            padding: 40px;
-            background: #0a0a0a;
-            color: var(--text-secondary);
-            margin-top: 50px;
-        }
+.btn-secondary:hover {
+    border-color: var(--text-main);
+    background: rgba(255,255,255,0.05);
+}
 
-        .social-links {
-            margin-bottom: 20px;
-        }
+/* --- YETENEKLER --- */
+.section {
+    padding: 80px 8%;
+}
 
-        .social-links a {
-            color: var(--text-main);
-            font-size: 24px;
-            margin: 0 15px;
-            transition: 0.3s;
-        }
+.section-title {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 50px;
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+}
 
-        .social-links a:hover {
-            color: var(--accent);
-        }
+.section-title::after {
+    content: '';
+    width: 60px;
+    height: 4px;
+    background: var(--primary);
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
 
-        /* Mobil Uyum */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            header { padding: 20px; }
-            nav { display: none; } /* Basitlik için mobilde menüyü gizledik */
-        }
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 20px;
+}
+
+.skill-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    transition: 0.3s;
+    cursor: default;
+}
+
+.skill-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-5px);
+    background: rgba(88, 101, 242, 0.1);
+}
+
+.skill-card i {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: var(--text-gray);
+    transition: 0.3s;
+}
+
+.skill-card:hover i { color: var(--text-main); }
+.skill-card span { display: block; font-weight: 500; font-size: 0.9rem; }
+
+/* Renk Özelleştirmeleri (Hover'da) */
+.skill-card.js:hover i { color: #f7df1e; }
+.skill-card.node:hover i { color: #68a063; }
+.skill-card.discord:hover i { color: #5865F2; }
+.skill-card.html:hover i { color: #e34f26; }
+
+/* --- PROJELER --- */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.project-card {
+    background: rgba(20, 23, 28, 0.6);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: 0.4s;
+    position: relative;
+    backdrop-filter: blur(5px);
+}
+
+.project-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--accent);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+.card-image {
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    color: rgba(255,255,255,0.8);
+}
+
+/* Kart Arka Planları */
+.ludio-bg { background: linear-gradient(135deg, #2b2e4a, #e84545); }
+.fs-bg { background: linear-gradient(135deg, #16213e, #0f3460); }
+.group-bg { background: linear-gradient(135deg, #11998e, #38ef7d); }
+
+.card-content {
+    padding: 25px;
+}
+
+.card-content h3 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+}
+
+.card-content p {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.card-tags {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.card-tags span {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    color: var(--accent);
+}
+
+.card-links a {
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.card-links a:hover {
+    color: var(--primary);
+    margin-left: 5px;
+}
+
+/* --- FOOTER --- */
+footer {
+    background: linear-gradient(to top, #0a0b0e, transparent);
+    padding: 50px 20px;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.social-links {
+    margin: 30px 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.social-btn {
+    width: 50px;
+    height: 50px;
+    background: var(--card-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-main);
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: 0.3s;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.social-btn:hover {
+    transform: translateY(-5px) scale(1.1);
+    border-color: var(--primary);
+    background: var(--primary);
+}
+
+.copyright p {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+/* --- MOBİL UYUM (RESPONSIVE) --- */
+.menu-toggle {
+    display: none;
+    cursor: pointer;
+}
+
+.bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    transition: 0.3s;
+    background-color: var(--text-main);
+}
+
+@media (max-width: 768px) {
+    .menu-toggle { display: block; }
+    
+    .nav-menu {
+        position: fixed;
+        left: -100%;
+        top: 70px;
+        flex-direction: column;
+        background: rgba(15, 17, 21, 0.95);
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+        backdrop-filter: blur(10px);
+        padding: 20px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .nav-menu.active { left: 0; }
+    .nav-menu a { margin: 20px 0; display: block; font-size: 1.1rem;}
+
+    h1 { font-size: 2.5rem; }
+    .hero-buttons { flex-direction: column; }
+    .btn { width: 100%; justify-content: center; }
+}
