@@ -177,8 +177,10 @@
     </footer>
 
     <script>
+        // Yıl otomatik güncellensin
         document.getElementById('year').textContent = new Date().getFullYear();
 
+        // Yazı Efekti (Typewriter)
         const textElement = document.getElementById('typewriter');
         const phrases = ['Amatör Yazılımcı', 'FarbeSquad Groups', 'FarbeSquad Studios', 'Öğrenci'];
         let phraseIndex = 0;
@@ -221,6 +223,16 @@
             menuToggle.classList.remove('active');
             navMenu.classList.remove('active');
         }));
+
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                scrollTopBtn.classList.add('active');
+            } else {
+                scrollTopBtn.classList.remove('active');
+            }
+        });
     </script>
     <a href="#" class="scroll-top" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></a>
 </body>
