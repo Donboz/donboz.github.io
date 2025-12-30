@@ -1,76 +1,126 @@
-/* --- GENEL AYARLAR --- */
+/* === GENEL AYARLAR VE DEĞİŞKENLER === */
 :root {
-    --bg-dark: #0f1115;
-    --card-bg: rgba(255, 255, 255, 0.05);
-    --primary: #5865F2; /* Discord Mavisi */
-    --accent: #00c6ff; /* Neon Mavi */
-    --secondary: #ff0055; /* Neon Pembe */
+    --bg-color: #0f0f16;
+    --card-bg: #1a1a24;
     --text-main: #ffffff;
-    --text-gray: #a0a0a0;
+    --text-secondary: #a0a0b0;
+    --accent: #02ff23; /* Senin seçtiğin neon yeşil */
+    --accent-glow: rgba(2, 255, 35, 0.5);
+    --gradient: linear-gradient(45deg, #02ff23, #00b7ff);
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
     scroll-behavior: smooth;
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: var(--bg-dark);
+    background-color: var(--bg-color);
     color: var(--text-main);
     overflow-x: hidden;
+    line-height: 1.6;
 }
 
-/* --- HAREKETLİ ARKA PLAN --- */
+/* === ARKAPLAN ANİMASYONU === */
 .bg-animation {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100vh;
-    background: radial-gradient(circle at 10% 20%, rgba(88, 101, 242, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(255, 0, 85, 0.1) 0%, transparent 40%);
+    background: radial-gradient(circle at 10% 20%, rgba(2, 255, 35, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 183, 255, 0.05) 0%, transparent 40%);
     z-index: -1;
 }
 
-/* --- HEADER --- */
+/* === CUSTOM SCROLLBAR === */
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
+/* === HEADER & MENU === */
 header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 1.2rem 5%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 8%;
-    background: rgba(15, 17, 21, 0.8);
+    background: rgba(15, 15, 22, 0.85);
     backdrop-filter: blur(10px);
-    position: fixed;
-    width: 100%;
-    top: 0;
     z-index: 1000;
     border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
 .logo {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     font-weight: 700;
     letter-spacing: 1px;
+    cursor: pointer;
 }
 
-.nav-menu a {
-    color: var(--text-gray);
+.nav-menu {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-link {
+    color: var(--text-main);
     text-decoration: none;
-    margin-left: 30px;
     font-weight: 500;
     transition: 0.3s;
-    font-size: 0.95rem;
+    position: relative;
 }
 
-.nav-menu a:hover {
-    color: var(--primary);
-    text-shadow: 0 0 10px rgba(88, 101, 242, 0.5);
+.nav-link:hover {
+    color: var(--accent);
 }
 
-/* --- HERO BÖLÜMÜ --- */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: var(--accent);
+    transition: 0.3s;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* === HAMBURGER MENU (MOBİL) === */
+.menu-toggle {
+    display: none;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.bar {
+    width: 25px;
+    height: 3px;
+    background-color: var(--text-main);
+    transition: 0.3s;
+}
+
+/* === HERO SECTION === */
 .hero {
     height: 100vh;
     display: flex;
@@ -78,13 +128,17 @@ header {
     justify-content: center;
     text-align: center;
     padding: 0 20px;
-    margin-top: 40px;
+    padding-top: 60px; /* Header payı */
+}
+
+.hero-content {
+    max-width: 800px;
 }
 
 .img-container {
     position: relative;
     display: inline-block;
-    margin-bottom: 25px;
+    margin-bottom: 1.5rem;
 }
 
 .profile-img {
@@ -92,108 +146,118 @@ header {
     height: 160px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid var(--primary);
-    box-shadow: 0 0 30px rgba(88, 101, 242, 0.4);
-    transition: transform 0.3s;
+    border: 3px solid var(--accent);
+    box-shadow: 0 0 25px var(--accent-glow);
+    animation: float 6s ease-in-out infinite;
 }
 
-.profile-img:hover {
-    transform: scale(1.05);
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
 }
 
 .status-badge {
     position: absolute;
     bottom: 10px;
-    right: 0;
-    background: #23272a;
+    right: 10px;
+    background: #1a1a24;
+    border: 1px solid var(--accent);
+    color: var(--accent);
     padding: 5px 12px;
     border-radius: 20px;
     font-size: 0.8rem;
-    border: 1px solid var(--primary);
-    color: var(--text-main);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 h1 {
     font-size: 3.5rem;
-    margin-bottom: 10px;
+    margin-bottom: 0.5rem;
     line-height: 1.2;
 }
 
 .gradient-text {
-    background: linear-gradient(45deg, var(--primary), var(--accent));
+    background: var(--gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .typing-container {
     font-size: 1.5rem;
-    color: var(--accent);
-    margin-bottom: 20px;
-    font-weight: 600;
-    height: 30px;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    min-height: 1.6em;
 }
 
 .cursor {
-    animation: blink 1s infinite;
+    color: var(--accent);
+    animation: blink 0.8s infinite;
 }
 
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
 
 .hero-text {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
     max-width: 600px;
-    margin: 0 auto 30px;
-    color: var(--text-gray);
-    line-height: 1.6;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .hero-buttons {
     display: flex;
-    gap: 15px;
+    gap: 1rem;
     justify-content: center;
 }
 
 .btn {
-    padding: 12px 30px;
+    padding: 12px 25px;
     border-radius: 30px;
     text-decoration: none;
     font-weight: 600;
     transition: 0.3s;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 8px;
 }
 
 .btn-primary {
-    background: var(--primary);
-    color: white;
-    box-shadow: 0 0 20px rgba(88, 101, 242, 0.3);
+    background: var(--accent);
+    color: #000;
+    box-shadow: 0 0 15px var(--accent-glow);
 }
 
 .btn-primary:hover {
+    background: #fff;
     transform: translateY(-3px);
-    box-shadow: 0 0 30px rgba(88, 101, 242, 0.6);
 }
 
 .btn-secondary {
     background: transparent;
-    border: 2px solid var(--text-gray);
+    border: 2px solid var(--text-secondary);
     color: var(--text-main);
 }
 
 .btn-secondary:hover {
-    border-color: var(--text-main);
-    background: rgba(255,255,255,0.05);
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
-/* --- YETENEKLER --- */
+/* === SECTIONS === */
 .section {
-    padding: 80px 8%;
+    padding: 5rem 10%;
 }
 
 .section-title {
     text-align: center;
-    font-size: 2.2rem;
-    margin-bottom: 50px;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
     position: relative;
     display: inline-block;
     left: 50%;
@@ -202,79 +266,79 @@ h1 {
 
 .section-title::after {
     content: '';
+    display: block;
     width: 60px;
     height: 4px;
-    background: var(--primary);
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
+    background: var(--accent);
+    margin: 10px auto 0;
     border-radius: 2px;
 }
 
+/* === SKILLS GRID === */
 .skills-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1.5rem;
 }
 
 .skill-card {
     background: var(--card-bg);
-    border: 1px solid rgba(255,255,255,0.05);
-    padding: 20px;
+    padding: 1.5rem;
     border-radius: 15px;
     text-align: center;
     transition: 0.3s;
-    cursor: default;
-}
-
-.skill-card:hover {
-    border-color: var(--primary);
-    transform: translateY(-5px);
-    background: rgba(88, 101, 242, 0.1);
+    border: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
 .skill-card i {
     font-size: 2.5rem;
-    margin-bottom: 10px;
-    color: var(--text-gray);
+    margin-bottom: 5px;
     transition: 0.3s;
 }
 
-.skill-card:hover i { color: var(--text-main); }
-.skill-card span { display: block; font-weight: 500; font-size: 0.9rem; }
+.skill-card span {
+    font-weight: 500;
+}
 
-/* Renk Özelleştirmeleri (Hover'da) */
+.skill-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+}
+
+/* İkonlara özel renkler (Hover'da canlansın) */
 .skill-card.js:hover i { color: #f7df1e; }
 .skill-card.node:hover i { color: #68a063; }
-.skill-card.discord:hover i { color: #5865F2; }
 .skill-card.html:hover i { color: #e34f26; }
+.skill-card.java:hover i { color: #f89820; }
+.skill-card.db:hover i { color: #00ed64; }
+.skill-card.csharp:hover i { color: #9b4f96; }
 
-/* --- PROJELER --- */
+/* === PROJECTS === */
 .projects-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
+    gap: 2rem;
 }
 
 .project-card {
-    background: rgba(20, 23, 28, 0.6);
+    background: var(--card-bg);
     border-radius: 20px;
     overflow: hidden;
+    transition: 0.3s;
     border: 1px solid rgba(255,255,255,0.05);
-    transition: 0.4s;
-    position: relative;
-    backdrop-filter: blur(5px);
 }
 
 .project-card:hover {
     transform: translateY(-10px);
-    border-color: var(--accent);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 .card-image {
-    height: 140px;
+    height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -282,132 +346,124 @@ h1 {
     color: rgba(255,255,255,0.8);
 }
 
-/* Kart Arka Planları */
-.ludio-bg { background: linear-gradient(135deg, #2b2e4a, #e84545); }
-.fs-bg { background: linear-gradient(135deg, #16213e, #0f3460); }
-.group-bg { background: linear-gradient(135deg, #11998e, #38ef7d); }
+/* Proje arkaplan renkleri */
+.ludio-bg { background: linear-gradient(135deg, #2b5876, #4e4376); }
+.fs-bg { background: linear-gradient(135deg, #134e5e, #71b280); }
+.group-bg { background: linear-gradient(135deg, #cc2b5e, #753a88); }
 
 .card-content {
-    padding: 25px;
+    padding: 1.5rem;
 }
 
 .card-content h3 {
+    margin-bottom: 0.5rem;
     font-size: 1.4rem;
-    margin-bottom: 10px;
 }
 
 .card-content p {
-    color: var(--text-gray);
+    color: var(--text-secondary);
     font-size: 0.9rem;
-    margin-bottom: 20px;
-    line-height: 1.5;
-}
-
-.card-tags {
-    margin-bottom: 20px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.card-tags span {
-    font-size: 0.75rem;
-    padding: 4px 10px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 12px;
-    color: var(--accent);
+    margin-bottom: 1.5rem;
 }
 
 .card-links a {
+    color: var(--accent);
     text-decoration: none;
-    color: var(--text-main);
     font-weight: 600;
     font-size: 0.9rem;
-    transition: 0.3s;
+    transition: 0.2s;
 }
 
 .card-links a:hover {
-    color: var(--primary);
+    color: #fff;
     margin-left: 5px;
 }
 
-/* --- FOOTER --- */
+/* === FOOTER === */
 footer {
-    background: linear-gradient(to top, #0a0b0e, transparent);
-    padding: 50px 20px;
+    background: #0a0a10;
+    padding: 4rem 10% 2rem;
     text-align: center;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    margin-top: 5rem;
+}
+
+.footer-content h2 {
+    margin-bottom: 1rem;
+}
+
+.footer-content p {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
 }
 
 .social-links {
-    margin: 30px 0;
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
 }
 
 .social-btn {
     width: 50px;
     height: 50px;
-    background: var(--card-bg);
     border-radius: 50%;
+    background: rgba(255,255,255,0.05);
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--text-main);
-    font-size: 1.2rem;
     text-decoration: none;
+    font-size: 1.2rem;
     transition: 0.3s;
-    border: 1px solid rgba(255,255,255,0.05);
 }
 
 .social-btn:hover {
-    transform: translateY(-5px) scale(1.1);
-    border-color: var(--primary);
-    background: var(--primary);
+    background: var(--accent);
+    color: #000;
+    transform: scale(1.1);
 }
 
-.copyright p {
-    color: var(--text-gray);
+.copyright {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 2rem;
     font-size: 0.9rem;
+    color: var(--text-secondary);
 }
 
-/* --- MOBİL UYUM (RESPONSIVE) --- */
-.menu-toggle {
-    display: none;
-    cursor: pointer;
-}
-
-.bar {
-    display: block;
-    width: 25px;
-    height: 3px;
-    margin: 5px auto;
-    transition: 0.3s;
-    background-color: var(--text-main);
-}
-
+/* === MEDIA QUERIES (MOBİL UYUMLULUK) === */
 @media (max-width: 768px) {
-    .menu-toggle { display: block; }
-    
-    .nav-menu {
-        position: fixed;
-        left: -100%;
-        top: 70px;
-        flex-direction: column;
-        background: rgba(15, 17, 21, 0.95);
-        width: 100%;
-        text-align: center;
-        transition: 0.3s;
-        backdrop-filter: blur(10px);
-        padding: 20px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
+    .menu-toggle {
+        display: flex;
+        z-index: 1001;
     }
 
-    .nav-menu.active { left: 0; }
-    .nav-menu a { margin: 20px 0; display: block; font-size: 1.1rem;}
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: #1a1a24;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: 0.4s;
+        box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+    }
+
+    .nav-menu.active {
+        right: 0;
+    }
+
+    /* Hamburger animasyonu */
+    .menu-toggle.active .bar:nth-child(1) { transform: rotate(-45deg) translate(-5px, 6px); }
+    .menu-toggle.active .bar:nth-child(2) { opacity: 0; }
+    .menu-toggle.active .bar:nth-child(3) { transform: rotate(45deg) translate(-5px, -6px); }
 
     h1 { font-size: 2.5rem; }
+    
     .hero-buttons { flex-direction: column; }
     .btn { width: 100%; justify-content: center; }
+    
+    .section { padding: 4rem 5%; }
 }
