@@ -1,12 +1,14 @@
-/* === GENEL AYARLAR VE DEĞİŞKENLER === */
+/* =========================================
+   1. GENEL AYARLAR VE DEĞİŞKENLER
+   ========================================= */
 :root {
-    --bg-color: #0f0f16;
-    --card-bg: #1a1a24;
-    --text-main: #ffffff;
-    --text-secondary: #a0a0b0;
-    --accent: #02ff23; /* Senin seçtiğin neon yeşil */
-    --accent-glow: rgba(2, 255, 35, 0.5);
-    --gradient: linear-gradient(45deg, #02ff23, #00b7ff);
+    --bg-color: #0f0f16;           /* Ana Arkaplan (Çok koyu lacivert/siyah) */
+    --card-bg: #1a1a24;            /* Kart Arkaplanı */
+    --text-main: #ffffff;          /* Ana Yazı Rengi */
+    --text-secondary: #a0a0b0;     /* İkincil Yazı Rengi (Gri) */
+    --accent: #02ff23;             /* Vurgu Rengi (Neon Yeşil) */
+    --accent-glow: rgba(2, 255, 35, 0.5); /* Yeşil Parlama Efekti */
+    --gradient: linear-gradient(45deg, #02ff23, #00b7ff); /* Yeşil-Mavi Geçiş */
 }
 
 * {
@@ -14,29 +16,33 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
-    scroll-behavior: smooth;
+    scroll-behavior: smooth; /* Yumuşak kaydırma */
 }
 
 body {
     background-color: var(--bg-color);
     color: var(--text-main);
-    overflow-x: hidden;
+    overflow-x: hidden; /* Yatay taşmayı engelle */
     line-height: 1.6;
 }
 
-/* === ARKAPLAN ANİMASYONU === */
+/* =========================================
+   2. ARKAPLAN ANİMASYONU VE SCROLLBAR
+   ========================================= */
 .bg-animation {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100vh;
+    /* Hafif hareketli yeşil ve mavi noktalar */
     background: radial-gradient(circle at 10% 20%, rgba(2, 255, 35, 0.05) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, rgba(0, 183, 255, 0.05) 0%, transparent 40%);
-    z-index: -1;
+    z-index: -1; /* En arkada durması için */
+    pointer-events: none;
 }
 
-/* === CUSTOM SCROLLBAR === */
+/* Scrollbar (Kaydırma Çubuğu) Tasarımı */
 ::-webkit-scrollbar {
     width: 10px;
 }
@@ -48,10 +54,12 @@ body {
     border-radius: 5px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--accent);
+    background: var(--accent); /* Üzerine gelince yeşil olsun */
 }
 
-/* === HEADER & MENU === */
+/* =========================================
+   3. HEADER (ÜST MENÜ)
+   ========================================= */
 header {
     position: fixed;
     top: 0;
@@ -60,8 +68,8 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(15, 15, 22, 0.85);
-    backdrop-filter: blur(10px);
+    background: rgba(15, 15, 22, 0.85); /* Yarı saydam */
+    backdrop-filter: blur(10px); /* Buzlu cam efekti */
     z-index: 1000;
     border-bottom: 1px solid rgba(255,255,255,0.05);
 }
@@ -71,6 +79,7 @@ header {
     font-weight: 700;
     letter-spacing: 1px;
     cursor: pointer;
+    color: var(--text-main);
 }
 
 .nav-menu {
@@ -84,12 +93,14 @@ header {
     font-weight: 500;
     transition: 0.3s;
     position: relative;
+    font-size: 0.95rem;
 }
 
 .nav-link:hover {
     color: var(--accent);
 }
 
+/* Linkin altındaki yeşil çizgi efekti */
 .nav-link::after {
     content: '';
     position: absolute;
@@ -105,9 +116,9 @@ header {
     width: 100%;
 }
 
-/* === HAMBURGER MENU (MOBİL) === */
+/* Mobil Menü Butonu (Hamburger) */
 .menu-toggle {
-    display: none;
+    display: none; /* Masaüstünde gizli */
     cursor: pointer;
     flex-direction: column;
     gap: 5px;
@@ -120,21 +131,23 @@ header {
     transition: 0.3s;
 }
 
-/* === HERO SECTION === */
+/* =========================================
+   4. HERO BÖLÜMÜ (GİRİŞ)
+   ========================================= */
 .hero {
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 0 20px;
-    padding-top: 60px; /* Header payı */
+    padding: 80px 20px 20px; /* Header payı */
 }
 
 .hero-content {
     max-width: 800px;
 }
 
+/* Profil Resmi Alanı */
 .img-container {
     position: relative;
     display: inline-block;
@@ -148,18 +161,18 @@ header {
     object-fit: cover;
     border: 3px solid var(--accent);
     box-shadow: 0 0 25px var(--accent-glow);
-    animation: float 6s ease-in-out infinite;
+    animation: float 6s ease-in-out infinite; /* Süzülme animasyonu */
 }
 
 @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-15px); }
 }
 
 .status-badge {
     position: absolute;
     bottom: 10px;
-    right: 10px;
+    right: 5px;
     background: #1a1a24;
     border: 1px solid var(--accent);
     color: var(--accent);
@@ -178,12 +191,14 @@ h1 {
     line-height: 1.2;
 }
 
+/* Renk geçişli metin (Donboz yazısı) */
 .gradient-text {
     background: var(--gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
+/* Daktilo Efekti Alanı */
 .typing-container {
     font-size: 1.5rem;
     color: var(--text-secondary);
@@ -210,6 +225,7 @@ h1 {
     margin-right: auto;
 }
 
+/* Butonlar */
 .hero-buttons {
     display: flex;
     gap: 1rem;
@@ -217,7 +233,7 @@ h1 {
 }
 
 .btn {
-    padding: 12px 25px;
+    padding: 12px 30px;
     border-radius: 30px;
     text-decoration: none;
     font-weight: 600;
@@ -229,7 +245,7 @@ h1 {
 
 .btn-primary {
     background: var(--accent);
-    color: #000;
+    color: #000; /* Siyah yazı okunabilirlik için */
     box-shadow: 0 0 15px var(--accent-glow);
 }
 
@@ -249,7 +265,9 @@ h1 {
     color: var(--accent);
 }
 
-/* === SECTIONS === */
+/* =========================================
+   5. BÖLÜMLER GENEL (SECTIONS)
+   ========================================= */
 .section {
     padding: 5rem 10%;
 }
@@ -274,7 +292,77 @@ h1 {
     border-radius: 2px;
 }
 
-/* === SKILLS GRID === */
+/* =========================================
+   6. YOLCULUĞUM (TIMELINE)
+   ========================================= */
+.timeline {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Dikey Çizgi */
+.timeline::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    background: var(--accent);
+    top: 0;
+    bottom: 0;
+    left: 20px;
+    margin-left: -1px;
+}
+
+.timeline-item {
+    padding: 10px 40px;
+    position: relative;
+    background-color: inherit;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+/* Çizgi üzerindeki noktalar */
+.timeline-item::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 12px;
+    top: 15px;
+    background-color: var(--bg-color);
+    border: 3px solid var(--accent);
+    border-radius: 50%;
+    z-index: 1;
+    transition: 0.3s;
+}
+
+.timeline-item:hover::after {
+    background-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+}
+
+.timeline-item .date {
+    font-size: 0.9rem;
+    color: var(--accent);
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.timeline-item h3 {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+}
+
+.timeline-item p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* =========================================
+   7. YETENEKLER (SKILLS)
+   ========================================= */
 .skills-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -298,6 +386,7 @@ h1 {
     font-size: 2.5rem;
     margin-bottom: 5px;
     transition: 0.3s;
+    color: var(--text-secondary); /* Normalde gri */
 }
 
 .skill-card span {
@@ -309,15 +398,18 @@ h1 {
     border-color: var(--accent);
 }
 
-/* İkonlara özel renkler (Hover'da canlansın) */
+/* Hover olunca ikonlar renklensin */
 .skill-card.js:hover i { color: #f7df1e; }
 .skill-card.node:hover i { color: #68a063; }
 .skill-card.html:hover i { color: #e34f26; }
 .skill-card.java:hover i { color: #f89820; }
 .skill-card.db:hover i { color: #00ed64; }
 .skill-card.csharp:hover i { color: #9b4f96; }
+.skill-card.git:hover i { color: #f05032; }
 
-/* === PROJECTS === */
+/* =========================================
+   8. PROJELER
+   ========================================= */
 .projects-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -330,11 +422,13 @@ h1 {
     overflow: hidden;
     transition: 0.3s;
     border: 1px solid rgba(255,255,255,0.05);
+    position: relative;
 }
 
 .project-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border-color: rgba(2, 255, 35, 0.3);
 }
 
 .card-image {
@@ -346,7 +440,7 @@ h1 {
     color: rgba(255,255,255,0.8);
 }
 
-/* Proje arkaplan renkleri */
+/* Proje arkaplan gradyanları */
 .ludio-bg { background: linear-gradient(135deg, #2b5876, #4e4376); }
 .fs-bg { background: linear-gradient(135deg, #134e5e, #71b280); }
 .group-bg { background: linear-gradient(135deg, #cc2b5e, #753a88); }
@@ -372,19 +466,23 @@ h1 {
     font-weight: 600;
     font-size: 0.9rem;
     transition: 0.2s;
+    display: inline-block;
 }
 
 .card-links a:hover {
     color: #fff;
-    margin-left: 5px;
+    transform: translateX(5px);
 }
 
-/* === FOOTER === */
+/* =========================================
+   9. FOOTER VE SCROLL TOP
+   ========================================= */
 footer {
     background: #0a0a10;
     padding: 4rem 10% 2rem;
     text-align: center;
     margin-top: 5rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
 }
 
 .footer-content h2 {
@@ -420,7 +518,7 @@ footer {
 .social-btn:hover {
     background: var(--accent);
     color: #000;
-    transform: scale(1.1);
+    transform: scale(1.1) rotate(10deg);
 }
 
 .copyright {
@@ -430,57 +528,7 @@ footer {
     color: var(--text-secondary);
 }
 
-/* === TIMELINE === */
-.timeline {
-    position: relative;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-}
-.timeline::after {
-    content: '';
-    position: absolute;
-    width: 2px;
-    background: var(--accent);
-    top: 0;
-    bottom: 0;
-    left: 20px; /* Çizgi solda olsun */
-    margin-left: -1px;
-}
-.timeline-item {
-    padding: 10px 40px;
-    position: relative;
-    background-color: inherit;
-    width: 100%;
-}
-.timeline-item::after {
-    content: '';
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    right: auto;
-    left: 12px;
-    top: 15px;
-    background-color: var(--bg-color);
-    border: 3px solid var(--accent);
-    border-radius: 50%;
-    z-index: 1;
-    transition: 0.3s;
-}
-.timeline-item:hover::after {
-    background-color: var(--accent);
-    box-shadow: 0 0 10px var(--accent);
-}
-.timeline-item .date {
-    font-size: 0.85rem;
-    color: var(--accent);
-    font-weight: bold;
-}
-.timeline-item h3 {
-    margin-top: 5px;
-    font-size: 1.2rem;
-}
-
+/* YUKARI ÇIK BUTONU */
 .scroll-top {
     position: fixed;
     bottom: 30px;
@@ -494,11 +542,12 @@ footer {
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    opacity: 0; /* Başlangıçta gizli */
-    pointer-events: none;
+    opacity: 0; /* Başlangıçta görünmez */
+    pointer-events: none; /* Tıklanamaz */
     transition: 0.3s;
     z-index: 999;
     box-shadow: 0 0 15px var(--accent-glow);
+    font-size: 1.2rem;
 }
 
 .scroll-top.active {
@@ -507,18 +556,27 @@ footer {
     transform: translateY(0);
 }
 
-/* === MEDIA QUERIES (MOBİL UYUMLULUK) === */
+.scroll-top:hover {
+    background: #fff;
+    transform: translateY(-5px);
+}
+
+/* =========================================
+   10. MOBİL UYUMLULUK (MEDIA QUERIES)
+   ========================================= */
 @media (max-width: 768px) {
+    /* Hamburger Menü Görünsün */
     .menu-toggle {
         display: flex;
         z-index: 1001;
     }
 
+    /* Menü Yandan Gelsin */
     .nav-menu {
         position: fixed;
         top: 0;
         right: -100%;
-        width: 70%;
+        width: 75%;
         height: 100vh;
         background: #1a1a24;
         flex-direction: column;
@@ -532,15 +590,21 @@ footer {
         right: 0;
     }
 
-    /* Hamburger animasyonu */
+    /* Hamburger Animasyonu (X şekline dönme) */
     .menu-toggle.active .bar:nth-child(1) { transform: rotate(-45deg) translate(-5px, 6px); }
     .menu-toggle.active .bar:nth-child(2) { opacity: 0; }
     .menu-toggle.active .bar:nth-child(3) { transform: rotate(45deg) translate(-5px, -6px); }
 
+    /* Başlık boyutlarını küçült */
     h1 { font-size: 2.5rem; }
+    .hero-text { font-size: 1rem; }
     
-    .hero-buttons { flex-direction: column; }
+    /* Butonları alt alta al */
+    .hero-buttons { flex-direction: column; width: 100%; }
     .btn { width: 100%; justify-content: center; }
     
+    /* Bölüm boşluklarını azalt */
     .section { padding: 4rem 5%; }
+
+    .projects-grid { grid-template-columns: 1fr; }
 }
