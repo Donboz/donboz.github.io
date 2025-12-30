@@ -5,288 +5,117 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Murat 'Donboz' Batak</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* --- AYARLAR VE RENKLER --- */
-        :root {
-            --bg-color: #111111;
-            --card-bg: #1a1a1a;
-            --text-main: #ffffff;
-            --text-secondary: #a0a0a0;
-            --accent: #5865F2; /* Discord Mavisi */
-            --gradient: linear-gradient(45deg, #5865F2, #8A2BE2);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.6;
-        }
-
-        /* --- HEADER & NAV --- */
-        header {
-            padding: 20px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(17, 17, 17, 0.9);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid #222;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        nav a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            margin-left: 25px;
-            transition: 0.3s;
-        }
-
-        nav a:hover {
-            color: var(--text-main);
-        }
-
-        /* --- HERO BÖLÜMÜ (GİRİŞ) --- */
-        .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid var(--accent);
-            margin-bottom: 20px;
-            object-fit: cover;
-            box-shadow: 0 0 30px rgba(88, 101, 242, 0.4);
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin-bottom: 30px;
-        }
-
-        .typewriter {
-            color: var(--accent);
-            font-weight: bold;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background: var(--gradient);
-            color: white;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-            transition: transform 0.2s;
-        }
-
-        .btn:hover {
-            transform: translateY(-5px);
-        }
-
-        /* --- YETENEKLER --- */
-        .section {
-            padding: 80px 50px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            margin-bottom: 40px;
-            text-align: center;
-        }
-
-        .skills-grid {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .skill-tag {
-            background: var(--card-bg);
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 1px solid #333;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        /* --- PROJELER --- */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .project-card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 25px;
-            border: 1px solid #333;
-            transition: 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .project-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--accent);
-        }
-
-        .project-title {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: var(--text-main);
-        }
-
-        .project-desc {
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            font-size: 0.95rem;
-        }
-
-        .project-links a {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: bold;
-            margin-right: 15px;
-        }
-
-        /* --- FOOTER --- */
-        footer {
-            text-align: center;
-            padding: 40px;
-            background: #0a0a0a;
-            color: var(--text-secondary);
-            margin-top: 50px;
-        }
-
-        .social-links {
-            margin-bottom: 20px;
-        }
-
-        .social-links a {
-            color: var(--text-main);
-            font-size: 24px;
-            margin: 0 15px;
-            transition: 0.3s;
-        }
-
-        .social-links a:hover {
-            color: var(--accent);
-        }
-
-        /* Mobil Uyum */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            header { padding: 20px; }
-            nav { display: none; } /* Basitlik için mobilde menüyü gizledik */
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <div class="bg-animation"></div>
+
     <header>
-        <div class="logo">Donboz</div>
-        <nav>
-            <a href="#about">Hakkımda</a>
-            <a href="#projects">Projeler</a>
-            <a href="#contact">İletişim</a>
+        <div class="logo">Donboz<span style="color:var(--accent)">.dev</span></div>
+        
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="#home" class="nav-link">Ana Sayfa</a>
+            <a href="#about" class="nav-link">Hakkımda</a>
+            <a href="#projects" class="nav-link">Projeler</a>
+            <a href="#contact" class="nav-link">İletişim</a>
         </nav>
     </header>
 
-    <section class="hero">
-        <img src="https://via.placeholder.com/150" alt="Profil Resmi" class="profile-img">
-        
-        <h1>Selam, Ben <span style="color: var(--accent);">Donboz</span></h1>
-        <p>Ben bir <span class="typewriter">amatör yazılımcıyım.</p>
-        <p>Arkadaşlarla kurduğumuz FarbeSquad bünyesinde uygulamalar geliştiriyor ve işler yapıyoruz.</p>
-        
-        <br>
-        <a href="#projects" class="btn">Projelerimi Gör</a>
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="img-container">
+                <img src="./imgs/logo.png" alt="Donboz Profil" class="profile-img">
+                <div class="status-badge"><i class="fas fa-code"></i> Coding</div>
+            </div>
+            
+            <h1>Selam, Ben <span class="gradient-text">Donboz</span></h1>
+            <div class="typing-container">
+                <span id="typewriter"></span><span class="cursor">|</span>
+            </div>
+            
+            <p class="hero-text">
+                Arkadaşlarla kurduğumuz <span style="color: #02ff23; font-weight: bold;">FarbeSquad</span> bünyesinde 
+                birlikte işler yapıyoruz..
+            </p>
+            
+            <div class="hero-buttons">
+                <a href="#projects" class="btn btn-primary"><i class="fas fa-rocket"></i> Projelerim</a>
+                <a href="https://github.com/Donboz" target="_blank" class="btn btn-secondary"><i class="fab fa-github"></i> GitHub</a>
+            </div>
+        </div>
     </section>
 
     <section class="section" id="about">
-        <h2 class="section-title">Kullandığım Teknolojiler</h2>
+        <h2 class="section-title">Yetenekler & Teknolojiler</h2>
         <div class="skills-grid">
-            <div class="skill-tag"><i class="fab fa-js"></i> JavaScript</div>
-            <div class="skill-tag"><i class="fab fa-java"></i> Java</div>
-            <div class="skill-tag"><i class="fab fa-csharp"></i> C#</div>
-            <div class="skill-tag"><i class="fab fa-cpp"></i> C++</div>
-            <div class="skill-tag"><i class="fab fa-node"></i> Node.js</div>
-            <div class="skill-tag"><i class="fab fa-discord"></i> Discord.js</div>
-            <div class="skill-tag"><i class="fas fa-database"></i> MongoDB,SQL</div>
-            <div class="skill-tag"><i class="fab fa-html5"></i> HTML & CSS</div>
-            <div class="skill-tag"><i class="fab fa-git-alt"></i> Git</div>
-            <div class="skill-tag"><i class="fas fa-palette"></i> Canvas (Grafik)</div>
+            <div class="skill-card js"><i class="fab fa-js"></i> <span>JavaScript</span></div>
+            <div class="skill-card node"><i class="fab fa-node"></i> <span>Node.js</span></div>
+            <div class="skill-card java"><i class="fab fa-java"></i> <span>Java</span></div>
+            <div class="skill-card csharp"><i class="fab fa-csharp"></i> <span>C#</span></div>
+            <div class="skill-card csharp"><i class="fab fa-cplus"></i> <span>C++</span></div>
+            <div class="skill-card db"><i class="fas fa-database"></i> <span>MongoDB/SQL</span></div>
+            <div class="skill-card html"><i class="fab fa-html5"></i> <span>HTML & CSS</span></div>
+            <div class="skill-card git"><i class="fab fa-git-alt"></i> <span>Git</span></div>
         </div>
     </section>
 
     <section class="section" id="projects">
-        <h2 class="section-title">Projelerim</h2>
+        <h2 class="section-title">Neler Yaptım?</h2>
         <div class="projects-grid">
             
             <div class="project-card">
-                <div class="project-title">🚀 Ludio Bot</div>
-                <p class="project-desc">
-                    Web Dashboard destekli, görsel seviye sistemi (Canvas), sunucu yedekleme ve moderasyon özelliklerine sahip gelişmiş bir Discord botu.
-                </p>
-                <div class="project-links">
-                    <a href="https://discord.com/oauth2/authorize?client_id=803218548482768906"><i class="fab fa-discord"></i> Botu Ekle</a>
+                <div class="card-image ludio-bg">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="card-content">
+                    <h3>🚀 Ludio Bot</h3>
+                    <p>Gelişmiş özelliklerle dolu Public Sunucularının gözdesi <span style="color: #05fc2e; font-weight: bold;">FarbeSquad Ludio</span>.</p>
+                    <div class="card-tags">
+                        <span>Node.js</span><span>Discord.js</span><span>Canvas</span>
+                    </div>
+                    <div class="card-links">
+                        <a href="https://discord.com/oauth2/authorize?client_id=803218548482768906" target="_blank">Botu Ekle <i class="fas fa-arrow-right"></i></a>
+                    </div>
                 </div>
             </div>
 
             <div class="project-card">
-                <div class="project-title">🎨 FarbeSquad Studios</div>
-                <p class="project-desc">
-                    Geliştirdiğim projeleri paylaştığım Discord Sunucum.
-                </p>
-                <div class="project-links">
-                    <a href="https://discord.gg/zWhV6Kchgx"><i class="fab fa-discord"></i> Sunucuya Katıl</a>
+                <div class="card-image fs-bg">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <div class="card-content">
+                    <h3>🎨 FarbeSquad Studios</h3>
+                    <p>Geliştirici ekibim ve yazılım topluluğum. Proje paylaşımları ve destek merkezi.</p>
+                    <div class="card-tags">
+                        <span>Topluluk</span><span>Yazılım</span><span>Destek</span>
+                    </div>
+                    <div class="card-links">
+                        <a href="https://discord.gg/zWhV6Kchgx" target="_blank">Katıl <i class="fas fa-arrow-right"></i></a>
+                    </div>
                 </div>
             </div>
 
-            <div class="project-card">
-                <div class="project-title">🎨 FarbeSquad Groups</div>
-                <p class="project-desc">
-                    Ekibimiz ve topluluğumuzun Discord Sunucusu.
-                </p>
-                <div class="project-links">
-                    <a href="https://discord.gg/zWhV6Kchgx#"><i class="fab fa-discord"></i> Sunucuya Katıl</a>
+             <div class="project-card">
+                <div class="card-image group-bg">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="card-content">
+                    <h3>👥 FarbeSquad Groups</h3>
+                    <p>Ekibimiz ve topluluğumuzun ana buluşma noktası.</p>
+                    <div class="card-tags">
+                        <span>Sosyal</span><span>Etkinlik</span>
+                    </div>
+                    <div class="card-links">
+                        <a href="https://discord.gg/zWhV6Kchgx" target="_blank">Katıl <i class="fas fa-arrow-right"></i></a>
+                    </div>
                 </div>
             </div>
 
@@ -294,15 +123,59 @@
     </section>
 
     <footer id="contact">
-        <div class="social-links">
-            <a href="https://github.com/Donboz" target="_blank"><i class="fab fa-github"></i></a>
-            <a href="https://discord.gg/zWhV6Kchgx" target="_blank"><i class="fab fa-discord"></i></a>
-            <a href="https://instagram.com/muratbatak2005" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="mailto:muratbatak052005@gmail.com"><i class="fas fa-envelope"></i></a>
-            <a href="mailto:muratbatak052005@hotmail.com"><i class="fas fa-envelope"></i></a>
+        <div class="footer-content">
+            <h2>Benimle İletişime Geç</h2>
+            <p>Bir proje fikrin mi var veya sadece merhaba demek mi istiyorsun?</p>
+            <div class="social-links">
+                <a href="https://github.com/Donboz" target="_blank" class="social-btn github"><i class="fab fa-github"></i></a>
+                <a href="https://discord.gg/zWhV6Kchgx" target="_blank" class="social-btn discord"><i class="fab fa-discord"></i></a>
+                <a href="https://instagram.com/muratbatak2005" target="_blank" class="social-btn insta"><i class="fab fa-instagram"></i></a>
+                <a href="mailto:muratbatak052005@gmail.com" class="social-btn mail"><i class="fas fa-envelope"></i></a>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2024 Donboz | <span style="color:var(--accent)">FarbeSquad Studios</span></p>
+            </div>
         </div>
-        <p>&copy; 2024 Donboz - FarbeSquad Studios.</p>
     </footer>
 
+    <script>
+        const textElement = document.getElementById('typewriter');
+        const phrases = ['Amatör Yazılımcı', 'FarbeSquad Groups', 'FarbeSquad Studios', 'Öğrenci'];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function type() {
+            const currentPhrase = phrases[phraseIndex];
+            
+            if (isDeleting) {
+                textElement.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                textElement.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                isDeleting = true;
+                setTimeout(type, 2000); 
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                setTimeout(type, 500);
+            } else {
+                setTimeout(type, isDeleting ? 100 : 200);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', type);
+
+        const menuToggle = document.getElementById('mobile-menu');
+        const navMenu = document.querySelector('.nav-menu');
+
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+    </script>
 </body>
 </html>
