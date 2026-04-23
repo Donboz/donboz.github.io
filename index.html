@@ -5,23 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resim</title>
     <style>
-        /* Sayfanın kenar boşluklarını sıfırlayıp tam ekran yapıyoruz */
         body {
             margin: 0;
             height: 100vh;
             display: flex;
+            flex-direction: column; /* Öğeleri yan yana değil, alt alta dizmesi için eklendi */
             justify-content: center;
             align-items: center;
-            background-color: #121212; /* Göz yormaması için koyu bir arka plan */
+            background-color: #121212; 
         }
 
-        /* Resmi biraz büyük ve ekranı taşırmayacak şekilde ayarlıyoruz */
         img {
-            width: 450px; /* İstediğin gibi biraz büyük */
-            max-width: 90vw; /* Mobilde veya küçük ekranda taşmayı engeller */
+            width: 450px; 
+            max-width: 90vw; 
             height: auto;
         }
 
+        /* Eklediğimiz paragraf (p) etiketi için ayarlar */
         p {
             color: white; /* Yazıyı beyaz yapar */
             font-size: 28px; /* Yazı boyutu */
