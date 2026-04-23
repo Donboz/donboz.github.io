@@ -1,240 +1,31 @@
 <!DOCTYPE html>
 <html lang="tr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resim</title>
+    <style>
+        /* Sayfanın kenar boşluklarını sıfırlayıp tam ekran yapıyoruz */
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #121212; /* Göz yormaması için koyu bir arka plan */
+        }
 
-    <title>Murat 'Donboz' Batak | Yazılım Portfolyosu</title>
-    <meta name="description"
-        content="Merhaba, ben Murat Batak (Donboz). Amatör yazılımcı. Ludio Bot, Discord botları ve web projelerimi inceleyebilirsiniz.">
-    <meta name="author" content="Murat Batak">
-    <meta name="keywords" content="Donboz, Murat Batak, FarbeSquad, Ludio Bot, Yazılımcı, Web Geliştirici, Discord Bot">
-
-    <meta property="og:title" content="Murat 'Donboz' Batak | Portfolio">
-    <meta property="og:description"
-        content="FarbeSquad kurucusu ve yazılım geliştirici. Projelerimi ve yeteneklerimi inceleyin.">
-    <meta property="og:image" content="https://donboz.github.io/imgs/logo.png">
-    <meta property="og:url" content="https://donboz.github.io">
-    <meta property="og:type" content="website">
-    <link rel="icon" type="image/png" href="./imgs/logo.png">
-
-    <meta name="theme-color" content="#02ff23">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+        /* Resmi biraz büyük ve ekranı taşırmayacak şekilde ayarlıyoruz */
+        img {
+            width: 450px; /* İstediğin gibi biraz büyük */
+            max-width: 90vw; /* Mobilde veya küçük ekranda taşmayı engeller */
+            height: auto;
+        }
+    </style>
 </head>
-
 <body>
 
-    <div class="bg-animation"></div>
+    <img src="imgs/s-l400.jpg" alt="SEXXXXX">
 
-    <header>
-        <div class="logo">Donboz<span style="color:var(--accent)">.dev</span></div>
-
-        <div class="menu-toggle" id="mobile-menu">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </div>
-
-        <nav class="nav-menu">
-            <a href="#home" class="nav-link">Ana Sayfa</a>
-            <a href="#about" class="nav-link">Hakkımda</a>
-            <a href="#projects" class="nav-link">Projeler</a>
-            <a href="#contact" class="nav-link">İletişim</a>
-        </nav>
-    </header>
-
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <div class="img-container">
-                <img src="./imgs/logo.png" alt="Donboz Profil" class="profile-img">
-                <div class="status-badge"><i class="fas fa-code"></i> Coding</div>
-            </div>
-
-            <h1>Selam, Ben <span class="gradient-text">Donboz</span></h1>
-            <div class="typing-container">
-                <span id="typewriter"></span><span class="cursor">|</span>
-            </div>
-
-            <p class="hero-text">
-                Arkadaşlarla kurduğumuz <span style="color: #02ff23; font-weight: bold;">FarbeSquad</span> bünyesinde
-                birlikte işler yapıyoruz..
-            </p>
-
-            <div class="hero-buttons">
-                <a href="#projects" class="btn btn-primary"><i class="fas fa-rocket"></i> Projelerim</a>
-                <a href="https://github.com/Donboz" target="_blank" class="btn btn-secondary"><i
-                        class="fab fa-github"></i> GitHub</a>
-            </div>
-        </div>
-    </section>
-
-    <section class="section" id="journey">
-        <h2 class="section-title">Yolculuğum</h2>
-        <div class="timeline">
-            <div class="timeline-item">
-                <span class="date">2017</span>
-                <h3>İlk Kod Satırı</h3>
-                <p>Yazılım ile ilk tanışmam ve ilk ufak program ve projelerim.</p>
-            </div>
-            <div class="timeline-item">
-                <span class="date">2018-2019</span>
-                <h3>FarbeSquad</h3>
-                <p>Ekibimizin ilk toplandığı zamanlar.</p>
-            </div>
-            <div class="timeline-item">
-                <span class="date">2020-Günümüz</span>
-                <h3>Çeşitli Projeler ve Diğer Şeyler</h3>
-                <p>Denerken öğrenme, Kendimi geliştirme, Lise Son-Üniversite Dönemim.</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="section" id="about">
-        <h2 class="section-title">Yetenekler & Teknolojiler</h2>
-        <div class="skills-grid">
-            <div class="skill-card js"><i class="fab fa-js"></i> <span>JavaScript</span></div>
-            <div class="skill-card node"><i class="fab fa-node"></i> <span>Node.js</span></div>
-            <div class="skill-card java"><i class="fab fa-java"></i> <span>Java</span></div>
-            <div class="skill-card csharp"><i class="fab fa-csharp"></i> <span>C#</span></div>
-            <div class="skill-card csharp"><i class="fab fa-cplus"></i> <span>C++</span></div>
-            <div class="skill-card db"><i class="fas fa-database"></i> <span>MongoDB/SQL</span></div>
-            <div class="skill-card html"><i class="fab fa-html5"></i> <span>HTML & CSS</span></div>
-            <div class="skill-card git"><i class="fab fa-git-alt"></i> <span>Git</span></div>
-        </div>
-    </section>
-
-    <section class="section" id="projects">
-        <h2 class="section-title">Neler Yaptım?</h2>
-        <div class="projects-grid">
-
-            <div class="project-card">
-                <div class="card-image ludio-bg">
-                    <i class="fas fa-robot"></i>
-                </div>
-                <div class="card-content">
-                    <h3>🚀 Ludio Bot</h3>
-                    <p>Gelişmiş özelliklerle dolu Public Sunucularının gözdesi <span
-                            style="color: #05fc2e; font-weight: bold;">FarbeSquad Ludio</span>.</p>
-                    <div class="card-links">
-                        <a href="https://discord.com/oauth2/authorize?client_id=803218548482768906" target="_blank">Botu
-                            Ekle <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card">
-                <div class="card-image fs-bg">
-                    <i class="fas fa-palette"></i>
-                </div>
-                <div class="card-content">
-                    <h3>🎨 FarbeSquad Studios</h3>
-                    <p>Proje ve Uygulamalarımı paylaştığım Discord Sunucusu ve Destek Merkezi.</p>
-                    <div class="card-links">
-                        <a href="https://discord.gg/zWhV6Kchgx" target="_blank">Katıl <i
-                                class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card">
-                <div class="card-image group-bg">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="card-content">
-                    <h3>👥 FarbeSquad Groups</h3>
-                    <p>Ekibimiz ve topluluğumuzun ana buluşma noktası.</p>
-                    <div class="card-links">
-                        <a href="https://discord.gg/zWhV6Kchgx" target="_blank">Katıl <i
-                                class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <footer id="contact">
-        <div class="footer-content">
-            <h2>Benimle İletişime Geç</h2>
-            <p>Bir proje fikrin mi var veya sadece merhaba demek mi istiyorsun?</p>
-            <div class="social-links">
-                <a href="https://github.com/Donboz" target="_blank" class="social-btn github"><i
-                        class="fab fa-github"></i></a>
-                <a href="https://discord.gg/zWhV6Kchgx" target="_blank" class="social-btn discord"><i
-                        class="fab fa-discord"></i></a>
-                <a href="https://instagram.com/muratbatak2005" target="_blank" class="social-btn insta"><i
-                        class="fab fa-instagram"></i></a>
-                <a href="mailto:muratbatak052005@gmail.com" class="social-btn mail"><i class="fas fa-envelope"></i></a>
-            </div>
-            <div class="copyright">
-                <p>&copy; <span id="year"></span> Donboz | <span style="color:var(--accent)">FarbeSquad Studios</span>
-                </p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Yıl otomatik güncellensin
-        document.getElementById('year').textContent = new Date().getFullYear();
-
-        // Yazı Efekti (Typewriter)
-        const textElement = document.getElementById('typewriter');
-        const phrases = ['Amatör Yazılımcı', 'FarbeSquad Groups', 'FarbeSquad Studios', 'Öğrenci'];
-        let phraseIndex = 0;
-        let charIndex = 0;
-        let isDeleting = false;
-
-        function type() {
-            const currentPhrase = phrases[phraseIndex];
-
-            if (isDeleting) {
-                textElement.textContent = currentPhrase.substring(0, charIndex - 1);
-                charIndex--;
-            } else {
-                textElement.textContent = currentPhrase.substring(0, charIndex + 1);
-                charIndex++;
-            }
-
-            if (!isDeleting && charIndex === currentPhrase.length) {
-                isDeleting = true;
-                setTimeout(type, 2000);
-            } else if (isDeleting && charIndex === 0) {
-                isDeleting = false;
-                phraseIndex = (phraseIndex + 1) % phrases.length;
-                setTimeout(type, 500);
-            } else {
-                setTimeout(type, isDeleting ? 100 : 200);
-            }
-        }
-        document.addEventListener('DOMContentLoaded', type);
-
-        const menuToggle = document.getElementById('mobile-menu');
-        const navMenu = document.querySelector('.nav-menu');
-
-        menuToggle.addEventListener('click', () => {
-            menuToggle.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
-
-        document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
-            menuToggle.classList.remove('active');
-            navMenu.classList.remove('active');
-        }));
-
-        const scrollTopBtn = document.getElementById('scrollTopBtn');
-
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 500) {
-                scrollTopBtn.classList.add('active');
-            } else {
-                scrollTopBtn.classList.remove('active');
-            }
-        });
-    </script>
-    <a href="#" class="scroll-top" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></a>
 </body>
-
 </html>
