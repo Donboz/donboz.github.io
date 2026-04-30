@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Banner Bölücü</title>
+    <style>
+        :root {
+            --primary-color: #E1306C; /* Instagram pembesi */
+            --bg-color: #fafafa;
+            --text-color: #262626;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        h1 {
+            color: var(--primary-color);
+        }
+        .upload-btn-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .btn {
+            border: 2px dashed #dbdbdb;
+            color: gray;
+            background-color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .upload-btn-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .upload-btn-wrapper:hover .btn {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        /* Grid önizleme alanı */
+        #preview-container {
+            display: none;
+            margin-top: 30px;
+        }
+        .grid-preview {
+            display: flex;
+            justify-content: center;
+            gap: 5px; /* Instagram'daki o ufak boşluk hissi */
+            margin-bottom: 20px;
+        }
+        .grid-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 32%;
+        }
+        .grid-item img {
+            width: 100%;
+            height: auto;
+            border: 1px solid #dbdbdb;
+            border-radius: 4px;
+        }
+        .download-btn {
+            margin-top: 10px;
+            background-color: #0095f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .download-btn:hover {
+            background-color: #007bb5;
+        }
+        .instructions {
+            background-color: #fff9c4;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 14px;
+            margin-top: 20px;
+            border-left: 4px solid #fbc02d;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Instagram Banner Bölücü</h1>
+        <p>Yatay görselinizi yükleyin, Instagram profiliniz için anında 3 eşit parçaya bölelim.</p>
+
+        <div class="upload-btn-wrapper">
+            <button class="btn">Görsel Seç veya Sürükle Bırak</button>
+            <input type="file" id="imageInput" accept="image/png, image/jpeg, image/jpg" />
+        </div>
+
+        <div id="preview-container">
+            <h3>Önizleme ve İndirme</h3>
+            <div class="grid-preview" id="gridPreview">
+                <!-- Parçalar buraya JS ile eklenecek -->
+            </div>
+
+            <div class="instructions">
+                <strong>💡 Yükleme Sırası:</strong> Instagram profilinizde görsellerin yan yana düzgün durması için, indirdiğiniz bu parçaları <strong>sağdan sola doğru (Parça 3, Parça 2, Parça 1 sırasıyla)</strong> yüklemeniz gerekmektedir.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const previewContainer = document.getElementById('preview-container');
+        const gridPreview = document.getElementById('gridPreview');
+
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    processImage(img, file.name);
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        });
+
+        function processImage(img, originalFilename) {
+            // Önceki sonuçları temizle
+            gridPreview.innerHTML = '';
+            
+            const width = img.width;
+            const height = img.height;
+            const partWidth = Math.floor(width / 3);
+
+            // Orijinal dosya adından uzantıyı çıkarıp bir prefix oluşturalım
+            const namePrefix = originalFilename.split('.')[0] || 'banner';
+
+            for (let i = 0; i < 3; i++) {
+                // Her bir parça için sanal bir canvas oluştur
+                const canvas = document.createElement('canvas');
+                canvas.width = partWidth;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+
+                // Görselin ilgili kısmını canvas'a çiz (crop işlemi)
+                // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+                ctx.drawImage(img, i * partWidth, 0, partWidth, height, 0, 0, partWidth, height);
+
+                // Canvas'ı base64 görsel verisine çevir (yüksek kalite JPEG)
+                const dataUrl = canvas.toDataURL('image/jpeg', 1.0);
+
+                // Önizleme ve indirme için HTML elementlerini oluştur
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'grid-item';
+
+                const imgPreview = document.createElement('img');
+                imgPreview.src = dataUrl;
+                
+                const downloadLink = document.createElement('a');
+                downloadLink.href = dataUrl;
+                downloadLink.download = `${namePrefix}_parca_${i + 1}.jpg`;
+                downloadLink.className = 'download-btn';
+                downloadLink.innerText = `Parça ${i + 1} İndir`;
+
+                // Elementleri DOM'a ekle
+                itemDiv.appendChild(imgPreview);
+                itemDiv.appendChild(downloadLink);
+                gridPreview.appendChild(itemDiv);
+            }
+
+            // Sonuç alanını görünür yap
+            previewContainer.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
