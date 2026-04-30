@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Link Hub — Donboz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <!-- ── Editor styles ── -->
+    <style>
+        /* ── SHARED ─────────────────────────── */
+        .form-label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.4rem; }
+        input[type="text"], input[type="url"], textarea, select {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 0.7rem 1rem;
+            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s;
+            width: 100%;
+        }
+        input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+        select option { background: #1a1a24; }
+        .divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 0.5rem 0; }
+        .back-link {
+            color: var(--text-secondary); text-decoration: none; font-size: 0.88rem;
+            display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 1.5rem; transition: color 0.3s;
+        }
+        .back-link:hover { color: var(--accent); }
+
+        /* ── EDITOR VIEW ─────────────────────── */
+        #editorView { display: flex; flex-direction: column; min-height: 100vh; }
+
+        .editor-body {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 6.5rem 5% 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .editor-panel {
+            display: flex; flex-direction: column; gap: 1.5rem;
+        }
+        .panel-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 20px;
+            padding: 1.8rem;
+            display: flex; flex-direction: column; gap: 1rem;
+        }
+        .panel-card h3 { font-size: 1rem; color: var(--accent); }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+
+        /* Add link row */
+        .add-link-row { display: grid; grid-template-columns: auto 1fr 1fr; gap: 0.6rem; align-items: end; }
+        .icon-select-wrap { position: relative; }
+        .icon-select-wrap select { padding-left: 2rem; }
+        .icon-select-wrap .fa { position: absolute; left: 0.7rem; top: 50%; transform: translateY(-50%); pointer-events: none; font-size: 0.9rem; color: var(--accent); }
+
+        .btn-add {
+            background: var(--accent); color: #000; border: none;
+            border-radius: 10px; padding: 0.7rem 1.2rem;
+            font-weight: 700; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; white-space: nowrap;
+        }
+        .btn-add:hover { background: #fff; }
+
+        /* Links list */
+        #linksList { display: flex; flex-direction: column; gap: 0.6rem; }
+        .link-item {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 0.6rem 0.9rem;
+            display: flex; align-items: center; gap: 0.7rem;
+        }
+        .link-item .li-icon { color: var(--accent); width: 20px; text-align: center; }
+        .link-item .li-info { flex: 1; min-width: 0; }
+        .link-item .li-label { font-size: 0.88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .link-item .li-url { font-size: 0.75rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .link-item .li-del {
+            background: none; border: none; color: #ff6b6b; cursor: pointer;
+            font-size: 0.85rem; padding: 0.2rem; transition: 0.2s; flex-shrink: 0;
+        }
+        .link-item .li-del:hover { color: #ff3333; }
+
+        .empty-links { color: var(--text-secondary); font-size: 0.85rem; text-align: center; padding: 1rem 0; }
+
+        /* Share section */
+        .share-url-box {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(2,255,35,0.3);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+            word-break: break-all;
+            color: var(--accent);
+            display: none;
+        }
+        .share-url-box.show { display: block; }
+
+        .btn-row { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+        .btn-primary {
+            background: var(--accent); color: #000; border: none;
+            border-radius: 10px; padding: 0.75rem 1.4rem;
+            font-size: 0.92rem; font-weight: 700; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+        .btn-primary:hover { background: #fff; box-shadow: 0 0 20px var(--accent-glow); }
+        .btn-outline {
+            background: transparent; border: 2px solid var(--accent);
+            color: var(--accent); border-radius: 10px;
+            padding: 0.65rem 1.2rem; font-size: 0.88rem; font-weight: 600;
+            cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+        .btn-outline:hover { background: var(--accent); color: #000; }
+
+        .qr-small-frame {
+            background: #fff; padding: 10px; border-radius: 12px;
+            display: inline-flex; box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        /* Preview panel (right side) */
+        .preview-panel { display: flex; flex-direction: column; gap: 1rem; position: sticky; top: 5.5rem; align-self: start; }
+        .preview-label { font-size: 0.8rem; color: var(--text-secondary); text-align: center; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+
+        /* Phone mockup */
+        .phone-mock {
+            background: #12121a;
+            border: 2px solid rgba(255,255,255,0.12);
+            border-radius: 36px;
+            padding: 2rem 1.2rem 2rem;
+            min-height: 540px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .phone-mock::before {
+            content: '';
+            display: block;
+            width: 80px; height: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 99px;
+            margin: 0 auto 1.5rem;
+        }
+        /* Preview content inside phone */
+        .preview-inner { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
+        .preview-avatar {
+            width: 72px; height: 72px; border-radius: 50%;
+            object-fit: cover; border: 2px solid var(--accent);
+        }
+        .preview-avatar-placeholder {
+            width: 72px; height: 72px; border-radius: 50%;
+            background: rgba(2,255,35,0.15); border: 2px solid var(--accent);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; color: var(--accent);
+        }
+        .preview-name { font-size: 1rem; font-weight: 700; text-align: center; }
+        .preview-bio { font-size: 0.78rem; color: var(--text-secondary); text-align: center; max-width: 200px; }
+        .preview-links { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; }
+        .preview-link-btn {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 0.55rem 1rem;
+            display: flex; align-items: center; gap: 0.7rem;
+            font-size: 0.82rem; color: var(--text-main); text-decoration: none;
+            transition: 0.2s;
+        }
+        .preview-link-btn:hover { border-color: var(--accent); background: rgba(2,255,35,0.1); }
+        .preview-link-btn .pli { color: var(--accent); width: 16px; text-align: center; }
+
+        @media (max-width: 900px) {
+            .editor-body { grid-template-columns: 1fr; }
+            .preview-panel { position: static; }
+        }
+        @media (max-width: 600px) {
+            .add-link-row { grid-template-columns: 1fr 1fr; }
+            .add-link-row .btn-add { grid-column: 1/-1; justify-content: center; }
+            .two-col { grid-template-columns: 1fr; }
+            .editor-body { padding: 5.5rem 4% 3rem; gap: 1.5rem; }
+        }
+
+        /* ── VIEWER VIEW ─────────────────────── */
+        #viewerView {
+            display: none;
+            min-height: 100vh;
+            padding: 3rem 5%;
+            flex-direction: column;
+            align-items: center;
+        }
+        .viewer-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 28px;
+            padding: 2.5rem 2rem;
+            width: 100%; max-width: 420px;
+            display: flex; flex-direction: column; align-items: center; gap: 1rem;
+        }
+        .viewer-avatar {
+            width: 96px; height: 96px; border-radius: 50%;
+            object-fit: cover; border: 3px solid var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        .viewer-name { font-size: 1.6rem; font-weight: 700; text-align: center; }
+        .viewer-bio { font-size: 0.92rem; color: var(--text-secondary); text-align: center; max-width: 320px; }
+        .viewer-links { display: flex; flex-direction: column; gap: 0.8rem; width: 100%; margin-top: 0.5rem; }
+        .viewer-link-btn {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px; padding: 0.85rem 1.4rem;
+            display: flex; align-items: center; gap: 0.9rem;
+            color: var(--text-main); text-decoration: none;
+            transition: 0.25s; font-weight: 600;
+        }
+        .viewer-link-btn:hover { border-color: var(--accent); background: rgba(2,255,35,0.1); transform: translateX(4px); }
+        .viewer-link-btn .vli { color: var(--accent); width: 22px; text-align: center; font-size: 1.05rem; }
+        .viewer-footer { font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.5rem; }
+        .viewer-footer a { color: var(--accent); text-decoration: none; }
+        .viewer-edit-btn {
+            font-size: 0.8rem; color: var(--text-secondary); text-decoration: none;
+            margin-top: 1rem; display: inline-flex; align-items: center; gap: 0.3rem;
+            transition: color 0.3s;
+        }
+        .viewer-edit-btn:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+<div class="bg-animation"></div>
+
+<!-- ══════════════ EDITOR VIEW ══════════════ -->
+<div id="editorView">
+    <header>
+        <a href="index.html" class="logo"><span class="gradient-text">Donboz</span></a>
+        <nav class="nav-menu" id="navMenu">
+            <a href="index.html" class="nav-link">Ana Sayfa</a>
+        </nav>
+        <div class="menu-toggle" id="menuToggle">
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </div>
+    </header>
+
+    <div class="editor-body">
+        <!-- Left: Controls -->
+        <div class="editor-panel">
+            <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Araçlara Dön</a>
+
+            <!-- Profile card -->
+            <div class="panel-card">
+                <h3><i class="fa-solid fa-user"></i> Profil Bilgileri</h3>
+                <div>
+                    <label class="form-label" for="profileName">Adın / Marka Adı</label>
+                    <input type="text" id="profileName" placeholder="Adınız" maxlength="60">
+                </div>
+                <div>
+                    <label class="form-label" for="profileBio">Kısa Açıklama</label>
+                    <input type="text" id="profileBio" placeholder="Kısa bir bio veya slogan…" maxlength="120">
+                </div>
+                <div>
+                    <label class="form-label" for="profileAvatar">Avatar Görseli URL'si <span style="opacity:.6;font-weight:400;">(İsteğe bağlı)</span></label>
+                    <input type="url" id="profileAvatar" placeholder="https://…/avatar.jpg">
+                </div>
+            </div>
+
+            <!-- Links card -->
+            <div class="panel-card">
+                <h3><i class="fa-solid fa-link"></i> Linkler</h3>
+                <!-- Add form -->
+                <div class="add-link-row">
+                    <div>
+                        <label class="form-label">Platform</label>
+                        <select id="linkIcon">
+                            <option value="fab fa-instagram">Instagram</option>
+                            <option value="fab fa-twitter">Twitter/X</option>
+                            <option value="fab fa-tiktok">TikTok</option>
+                            <option value="fab fa-youtube">YouTube</option>
+                            <option value="fab fa-github">GitHub</option>
+                            <option value="fab fa-linkedin">LinkedIn</option>
+                            <option value="fab fa-facebook">Facebook</option>
+                            <option value="fab fa-spotify">Spotify</option>
+                            <option value="fab fa-twitch">Twitch</option>
+                            <option value="fab fa-discord">Discord</option>
+                            <option value="fab fa-whatsapp">WhatsApp</option>
+                            <option value="fab fa-telegram">Telegram</option>
+                            <option value="fa-solid fa-globe">Web Sitesi</option>
+                            <option value="fa-solid fa-envelope">E-posta</option>
+                            <option value="fa-solid fa-store">Mağaza</option>
+                            <option value="fa-solid fa-link">Diğer</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Etiket</label>
+                        <input type="text" id="linkLabel" placeholder="Instagram'ım" maxlength="40">
+                    </div>
+                    <div>
+                        <label class="form-label">URL</label>
+                        <input type="url" id="linkUrl" placeholder="https://…">
+                    </div>
+                    <button class="btn-add" id="addLinkBtn"><i class="fa-solid fa-plus"></i> Ekle</button>
+                </div>
+                <hr class="divider">
+                <div id="linksList"><p class="empty-links"><i class="fa-solid fa-link-slash"></i> Henüz link eklenmedi.</p></div>
+            </div>
+
+            <!-- Share card -->
+            <div class="panel-card">
+                <h3><i class="fa-solid fa-share-nodes"></i> Paylaş & QR</h3>
+                <div class="btn-row">
+                    <button class="btn-primary" id="generateShareBtn">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Link Oluştur
+                    </button>
+                    <button class="btn-outline" id="copyShareBtn" style="display:none;">
+                        <i class="fa-solid fa-copy"></i> Kopyala
+                    </button>
+                    <a id="openShareBtn" href="#" target="_blank" style="display:none;" class="btn-outline">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Aç
+                    </a>
+                </div>
+                <div class="share-url-box" id="shareUrlBox"></div>
+                <div id="shareQrWrap" style="display:none;margin-top:0.5rem;">
+                    <p class="form-label" style="margin-bottom:0.5rem;">QR Kod</p>
+                    <div class="qr-small-frame" id="shareQrFrame"></div>
+                    <br>
+                    <button class="btn-outline" id="downloadQrBtn" style="margin-top:0.6rem;">
+                        <i class="fa-solid fa-download"></i> QR İndir
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Live Preview -->
+        <div class="preview-panel">
+            <p class="preview-label"><i class="fa-solid fa-mobile-screen"></i> &nbsp;Canlı Önizleme</p>
+            <div class="phone-mock">
+                <div class="preview-inner" id="previewInner">
+                    <div class="preview-avatar-placeholder"><i class="fa-solid fa-user"></i></div>
+                    <p class="preview-name" id="prevName">Adınız</p>
+                    <p class="preview-bio" id="prevBio">Kısa açıklamanız burada görünür.</p>
+                    <div class="preview-links" id="prevLinks"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════ VIEWER VIEW ══════════════ -->
+<div id="viewerView">
+    <div class="viewer-card" id="viewerCard">
+        <!-- Rendered dynamically -->
+    </div>
+    <a href="links.html" class="viewer-edit-btn"><i class="fa-solid fa-pen-to-square"></i> Kendi hub'ını oluştur</a>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+let links = [];
+
+const ICON_LABELS = {
+    'fab fa-instagram': 'Instagram',
+    'fab fa-twitter': 'Twitter/X',
+    'fab fa-tiktok': 'TikTok',
+    'fab fa-youtube': 'YouTube',
+    'fab fa-github': 'GitHub',
+    'fab fa-linkedin': 'LinkedIn',
+    'fab fa-facebook': 'Facebook',
+    'fab fa-spotify': 'Spotify',
+    'fab fa-twitch': 'Twitch',
+    'fab fa-discord': 'Discord',
+    'fab fa-whatsapp': 'WhatsApp',
+    'fab fa-telegram': 'Telegram',
+    'fa-solid fa-globe': 'Web Sitesi',
+    'fa-solid fa-envelope': 'E-posta',
+    'fa-solid fa-store': 'Mağaza',
+    'fa-solid fa-link': 'Diğer'
+};
+
+// ══════════════════════════════════════════
+// MODE DETECTION
+// ══════════════════════════════════════════
+(function init() {
+    const hash = location.hash;
+    if (hash.startsWith('#data=')) {
+        try {
+            const b64 = decodeURIComponent(hash.slice(6));
+            const binary = atob(b64);
+            const json = decodeURIComponent(
+                Array.from(binary).map(c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0')).join('')
+            );
+            const data = JSON.parse(json);
+            showViewer(data);
+        } catch (e) {
+            showEditor();
+        }
+    } else {
+        showEditor();
+    }
+})();
+
+function showEditor() {
+    document.getElementById('editorView').style.display = 'flex';
+    document.getElementById('viewerView').style.display = 'none';
+    setupEditor();
+}
+
+function showViewer(data) {
+    document.getElementById('editorView').style.display = 'none';
+    const v = document.getElementById('viewerView');
+    v.style.display = 'flex';
+    renderViewer(data);
+}
+
+// ══════════════════════════════════════════
+// EDITOR
+// ══════════════════════════════════════════
+function setupEditor() {
+    // Hamburger
+    document.getElementById('menuToggle').addEventListener('click', () => {
+        document.getElementById('menuToggle').classList.toggle('active');
+        document.getElementById('navMenu').classList.toggle('active');
+    });
+
+    // Live preview update
+    ['profileName', 'profileBio', 'profileAvatar'].forEach(id => {
+        document.getElementById(id).addEventListener('input', updatePreview);
+    });
+
+    // Add link
+    document.getElementById('addLinkBtn').addEventListener('click', addLink);
+    document.getElementById('linkUrl').addEventListener('keydown', (e) => { if (e.key === 'Enter') addLink(); });
+
+    // Share
+    document.getElementById('generateShareBtn').addEventListener('click', generateShare);
+    document.getElementById('copyShareBtn').addEventListener('click', copyShare);
+
+    updatePreview();
+}
+
+function addLink() {
+    const icon  = document.getElementById('linkIcon').value;
+    const label = document.getElementById('linkLabel').value.trim() || ICON_LABELS[icon] || 'Link';
+    const url   = document.getElementById('linkUrl').value.trim();
+    if (!url) { document.getElementById('linkUrl').focus(); return; }
+
+    links.push({ icon, label, url });
+    document.getElementById('linkUrl').value = '';
+    document.getElementById('linkLabel').value = '';
+    renderLinksList();
+    updatePreview();
+}
+
+function removeLink(idx) {
+    links.splice(idx, 1);
+    renderLinksList();
+    updatePreview();
+}
+
+function renderLinksList() {
+    const container = document.getElementById('linksList');
+    if (links.length === 0) {
+        container.innerHTML = '<p class="empty-links"><i class="fa-solid fa-link-slash"></i> Henüz link eklenmedi.</p>';
+        return;
+    }
+    container.innerHTML = links.map((l, i) => `
+        <div class="link-item">
+            <i class="${l.icon} li-icon"></i>
+            <div class="li-info">
+                <div class="li-label">${escHtml(l.label)}</div>
+                <div class="li-url">${escHtml(l.url)}</div>
+            </div>
+            <button class="li-del" onclick="removeLink(${i})" title="Sil"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    `).join('');
+}
+
+function updatePreview() {
+    const name   = document.getElementById('profileName').value.trim() || 'Adınız';
+    const bio    = document.getElementById('profileBio').value.trim() || 'Kısa açıklamanız burada görünür.';
+    const avatar = document.getElementById('profileAvatar').value.trim();
+
+    document.getElementById('prevName').textContent = name;
+    document.getElementById('prevBio').textContent  = bio;
+
+    const inner = document.getElementById('previewInner');
+    const existing = inner.querySelector('.preview-avatar, .preview-avatar-placeholder');
+    if (avatar) {
+        if (!existing || existing.tagName !== 'IMG') {
+            const img = document.createElement('img');
+            img.className = 'preview-avatar';
+            inner.insertBefore(img, inner.firstChild);
+            if (existing) existing.remove();
+        }
+        inner.querySelector('.preview-avatar').src = avatar;
+    } else {
+        if (!existing || existing.tagName === 'IMG') {
+            const ph = document.createElement('div');
+            ph.className = 'preview-avatar-placeholder';
+            ph.innerHTML = '<i class="fa-solid fa-user"></i>';
+            inner.insertBefore(ph, inner.firstChild);
+            if (existing) existing.remove();
+        }
+    }
+
+    const linksContainer = document.getElementById('prevLinks');
+    linksContainer.innerHTML = links.map(l => `
+        <a href="${escHtml(l.url)}" class="preview-link-btn" target="_blank">
+            <i class="${l.icon} pli"></i>${escHtml(l.label)}
+        </a>`).join('');
+}
+
+let shareUrl = '';
+
+function generateShare() {
+    const name   = document.getElementById('profileName').value.trim();
+    const bio    = document.getElementById('profileBio').value.trim();
+    const avatar = document.getElementById('profileAvatar').value.trim();
+
+    if (!name && links.length === 0) {
+        alert('Lütfen en azından bir isim girin veya link ekleyin.');
+        return;
+    }
+
+    const data = { name, bio, avatar, links };
+    const json = JSON.stringify(data);
+    const encoded = btoa(encodeURIComponent(json).replace(/%([0-9A-F]{2})/g, (_, p1) => String.fromCharCode(parseInt(p1, 16))));
+    shareUrl = `${location.origin}${location.pathname}#data=${encodeURIComponent(encoded)}`;
+
+    const box = document.getElementById('shareUrlBox');
+    box.textContent = shareUrl;
+    box.classList.add('show');
+
+    document.getElementById('copyShareBtn').style.display = 'flex';
+    const openBtn = document.getElementById('openShareBtn');
+    openBtn.href = shareUrl;
+    openBtn.style.display = 'flex';
+
+    // QR
+    const qrFrame = document.getElementById('shareQrFrame');
+    qrFrame.innerHTML = '';
+    const staging = document.createElement('div');
+    staging.style.cssText = 'position:absolute;left:-9999px;';
+    document.body.appendChild(staging);
+    new QRCode(staging, { text: shareUrl, width: 180, height: 180, correctLevel: QRCode.CorrectLevel.M });
+    setTimeout(() => {
+        const srcEl = staging.querySelector('img') || staging.querySelector('canvas');
+        if (srcEl) {
+            const c = document.createElement('canvas');
+            c.width = c.height = 180;
+            const ctx = c.getContext('2d');
+            const img2 = new Image();
+            img2.onload = () => { ctx.drawImage(img2, 0, 0, 180, 180); };
+            img2.src = srcEl.tagName === 'IMG' ? srcEl.src : srcEl.toDataURL();
+            qrFrame.appendChild(c);
+        }
+        document.body.removeChild(staging);
+        document.getElementById('shareQrWrap').style.display = 'block';
+    }, 200);
+}
+
+function copyShare() {
+    navigator.clipboard.writeText(shareUrl).then(() => {
+        const btn = document.getElementById('copyShareBtn');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Kopyalandı!';
+        setTimeout(() => { btn.innerHTML = orig; }, 1800);
+    });
+}
+
+// ══════════════════════════════════════════
+// VIEWER
+// ══════════════════════════════════════════
+function renderViewer(data) {
+    document.title = data.name ? `${data.name} — Link Hub` : 'Link Hub — Donboz';
+
+    const card = document.getElementById('viewerCard');
+    const avatarHtml = data.avatar
+        ? `<img src="${escHtml(data.avatar)}" alt="Avatar" class="viewer-avatar">`
+        : `<div class="preview-avatar-placeholder" style="width:96px;height:96px;font-size:2rem;"><i class="fa-solid fa-user"></i></div>`;
+
+    const linksHtml = (data.links || []).map(l => `
+        <a href="${escHtml(l.url)}" class="viewer-link-btn" target="_blank" rel="noopener noreferrer">
+            <i class="${escHtml(l.icon)} vli"></i>
+            <span>${escHtml(l.label)}</span>
+        </a>`).join('');
+
+    card.innerHTML = `
+        ${avatarHtml}
+        <h1 class="viewer-name gradient-text">${escHtml(data.name || 'Link Hub')}</h1>
+        ${data.bio ? `<p class="viewer-bio">${escHtml(data.bio)}</p>` : ''}
+        <div class="viewer-links">${linksHtml || '<p style="color:var(--text-secondary);font-size:.9rem;">Henüz link yok.</p>'}</div>
+        <p class="viewer-footer">Powered by <a href="index.html">Donboz</a></p>
+    `;
+}
+
+// ══════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════
+function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// Download QR button (needs to be wired after DOM render)
+document.addEventListener('click', (e) => {
+    if (e.target.closest('#downloadQrBtn')) {
+        const canvas = document.getElementById('shareQrFrame').querySelector('canvas');
+        if (!canvas) return;
+        const a = document.createElement('a'); a.download = 'link-hub-qr.png'; a.href = canvas.toDataURL(); a.click();
+    }
+});
+</script>
+</body>
+</html>
