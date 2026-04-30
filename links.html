@@ -397,8 +397,12 @@ const ICON_LABELS = {
     const hash = location.hash;
     if (hash.startsWith('#data=')) {
         try {
-            const raw = decodeURIComponent(hash.slice(6));
-            const data = JSON.parse(atob(raw));
+            const b64 = decodeURIComponent(hash.slice(6));
+            const binary = atob(b64);
+            const json = decodeURIComponent(
+                Array.from(binary).map(c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0')).join('')
+            );
+            const data = JSON.parse(json);
             showViewer(data);
         } catch (e) {
             showEditor();
@@ -532,7 +536,8 @@ function generateShare() {
     }
 
     const data = { name, bio, avatar, links };
-    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    const json = JSON.stringify(data);
+    const encoded = btoa(encodeURIComponent(json).replace(/%([0-9A-F]{2})/g, (_, p1) => String.fromCharCode(parseInt(p1, 16))));
     shareUrl = `${location.origin}${location.pathname}#data=${encodeURIComponent(encoded)}`;
 
     const box = document.getElementById('shareUrlBox');
@@ -575,12 +580,6 @@ function copyShare() {
         setTimeout(() => { btn.innerHTML = orig; }, 1800);
     });
 }
-
-document.getElementById('downloadQrBtn') && document.getElementById('downloadQrBtn').addEventListener('click', () => {
-    const canvas = document.getElementById('shareQrFrame').querySelector('canvas');
-    if (!canvas) return;
-    const a = document.createElement('a'); a.download = 'link-hub-qr.png'; a.href = canvas.toDataURL(); a.click();
-});
 
 // ══════════════════════════════════════════
 // VIEWER
