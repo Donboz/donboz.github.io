@@ -6,7 +6,7 @@
     <title>Instagram Banner Bölücü</title>
     <style>
         :root {
-            --primary-color: #E1306C; /* Instagram pembesi */
+            --primary-color: #E1306C;
             --bg-color: #fafafa;
             --text-color: #262626;
         }
@@ -14,7 +14,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px;
             text-align: center;
@@ -26,9 +26,21 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             margin-top: 20px;
         }
-        h1 {
-            color: var(--primary-color);
+        h1 { color: var(--primary-color); }
+
+        /* Mode tabs */
+        .mode-tabs {
+            display: flex; gap: 8px; justify-content: center; margin-bottom: 20px;
         }
+        .mode-tab {
+            padding: 10px 22px; border-radius: 8px; border: 2px solid #dbdbdb;
+            background: white; cursor: pointer; font-weight: 600;
+            font-size: 14px; transition: all 0.2s; color: #555;
+        }
+        .mode-tab.active {
+            background: var(--primary-color); border-color: var(--primary-color); color: white;
+        }
+
         .upload-btn-wrapper {
             position: relative;
             overflow: hidden;
@@ -58,15 +70,13 @@
             border-color: var(--primary-color);
             color: var(--primary-color);
         }
-        /* Grid önizleme alanı */
-        #preview-container {
-            display: none;
-            margin-top: 30px;
-        }
+
+        /* 3-split grid preview */
+        #preview-container { display: none; margin-top: 30px; }
         .grid-preview {
             display: flex;
             justify-content: center;
-            gap: 5px; /* Instagram'daki o ufak boşluk hissi */
+            gap: 5px;
             margin-bottom: 20px;
         }
         .grid-item {
@@ -82,7 +92,7 @@
             border-radius: 4px;
         }
         .download-btn {
-            margin-top: 10px;
+            margin-top: 8px;
             background-color: #0095f6;
             color: white;
             border: none;
@@ -90,12 +100,52 @@
             border-radius: 4px;
             cursor: pointer;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
+            display: inline-block;
         }
-        .download-btn:hover {
-            background-color: #007bb5;
+        .download-btn:hover { background-color: #007bb5; }
+
+        /* 9-grid preview */
+        #preview9-container { display: none; margin-top: 30px; }
+        .grid9-preview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+            max-width: 540px;
+            margin: 0 auto 16px;
         }
+        .grid9-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .grid9-item img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border: 1px solid #dbdbdb;
+            border-radius: 3px;
+            display: block;
+        }
+        .grid9-item .panel-num {
+            font-size: 11px;
+            color: #888;
+            margin-top: 3px;
+        }
+        .download-all-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        .download-all-btn:hover { background-color: #c1275a; }
+
         .instructions {
             background-color: #fff9c4;
             padding: 15px;
@@ -105,99 +155,211 @@
             margin-top: 20px;
             border-left: 4px solid #fbc02d;
         }
+        .instructions.nine {
+            background-color: #e3f2fd;
+            border-left-color: #1976d2;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>Instagram Banner Bölücü</h1>
-        <p>Yatay görselinizi yükleyin, Instagram profiliniz için anında 3 eşit parçaya bölelim.</p>
+        <p>Görselinizi yükleyin, Instagram profil gridiniz için parçalara ayıralım.</p>
+
+        <!-- Mode selector -->
+        <div class="mode-tabs">
+            <button class="mode-tab active" id="tab3">3'lü Bölme</button>
+            <button class="mode-tab" id="tab9">9'lu Grid (3×3)</button>
+        </div>
+
+        <div id="modeDesc3" style="font-size:14px;color:#666;margin-bottom:16px;">
+            Yatay görselinizi 3 eşit dikey parçaya böler (1 satır × 3 sütun).
+        </div>
+        <div id="modeDesc9" style="display:none;font-size:14px;color:#666;margin-bottom:16px;">
+            Görselinizi 9 eşit kareye böler (3 satır × 3 sütun) — tam Instagram profil gridiniz.
+        </div>
 
         <div class="upload-btn-wrapper">
             <button class="btn">Görsel Seç veya Sürükle Bırak</button>
-            <input type="file" id="imageInput" accept="image/png, image/jpeg, image/jpg" />
+            <input type="file" id="imageInput" accept="image/png, image/jpeg, image/jpg, image/webp" />
         </div>
 
+        <!-- 3-split result -->
         <div id="preview-container">
             <h3>Önizleme ve İndirme</h3>
-            <div class="grid-preview" id="gridPreview">
-                <!-- Parçalar buraya JS ile eklenecek -->
-            </div>
-
+            <div class="grid-preview" id="gridPreview"></div>
             <div class="instructions">
-                <strong>💡 Yükleme Sırası:</strong> Instagram profilinizde görsellerin yan yana düzgün durması için, indirdiğiniz bu parçaları <strong>sağdan sola doğru (Parça 3, Parça 2, Parça 1 sırasıyla)</strong> yüklemeniz gerekmektedir.
+                <strong>💡 Yükleme Sırası:</strong> Görsellerin yan yana düzgün durması için parçaları
+                <strong>sağdan sola (Parça 3 → 2 → 1)</strong> sırasıyla yükleyin.
+            </div>
+        </div>
+
+        <!-- 9-grid result -->
+        <div id="preview9-container">
+            <h3>9'lu Grid Önizleme</h3>
+            <div class="grid9-preview" id="grid9Preview"></div>
+            <button class="download-all-btn" id="downloadAll9Btn">
+                ⬇️ Tüm 9 Parçayı İndir
+            </button>
+            <div class="instructions nine">
+                <strong>💡 Instagram Yükleme Sırası:</strong> Profil gridinde doğru görünmesi için parçaları
+                <strong>aşağıdan yukarıya, her satırda sağdan sola</strong> yükleyin:<br>
+                <em>9 → 8 → 7 → 6 → 5 → 4 → 3 → 2 → 1</em>
             </div>
         </div>
     </div>
 
     <script>
+        let currentMode = '3';
+
+        document.getElementById('tab3').addEventListener('click', () => {
+            currentMode = '3';
+            document.getElementById('tab3').classList.add('active');
+            document.getElementById('tab9').classList.remove('active');
+            document.getElementById('modeDesc3').style.display = '';
+            document.getElementById('modeDesc9').style.display = 'none';
+            document.getElementById('preview-container').style.display = 'none';
+            document.getElementById('preview9-container').style.display = 'none';
+        });
+
+        document.getElementById('tab9').addEventListener('click', () => {
+            currentMode = '9';
+            document.getElementById('tab9').classList.add('active');
+            document.getElementById('tab3').classList.remove('active');
+            document.getElementById('modeDesc9').style.display = '';
+            document.getElementById('modeDesc3').style.display = 'none';
+            document.getElementById('preview-container').style.display = 'none';
+            document.getElementById('preview9-container').style.display = 'none';
+        });
+
         const imageInput = document.getElementById('imageInput');
-        const previewContainer = document.getElementById('preview-container');
-        const gridPreview = document.getElementById('gridPreview');
 
         imageInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
-            
             reader.onload = function(event) {
                 const img = new Image();
                 img.onload = function() {
-                    processImage(img, file.name);
-                }
+                    if (currentMode === '3') {
+                        process3Split(img, file.name);
+                    } else {
+                        process9Grid(img, file.name);
+                    }
+                };
                 img.src = event.target.result;
-            }
+            };
             reader.readAsDataURL(file);
         });
 
-        function processImage(img, originalFilename) {
-            // Önceki sonuçları temizle
-            gridPreview.innerHTML = '';
-            
+        // ── 3-split ──────────────────────────────────────────
+        function process3Split(img, originalFilename) {
+            document.getElementById('gridPreview').innerHTML = '';
+            document.getElementById('preview9-container').style.display = 'none';
+
             const width = img.width;
             const height = img.height;
             const partWidth = Math.floor(width / 3);
-
-            // Orijinal dosya adından uzantıyı çıkarıp bir prefix oluşturalım
             const namePrefix = originalFilename.split('.')[0] || 'banner';
 
             for (let i = 0; i < 3; i++) {
-                // Her bir parça için sanal bir canvas oluştur
                 const canvas = document.createElement('canvas');
                 canvas.width = partWidth;
                 canvas.height = height;
                 const ctx = canvas.getContext('2d');
-
-                // Görselin ilgili kısmını canvas'a çiz (crop işlemi)
-                // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
                 ctx.drawImage(img, i * partWidth, 0, partWidth, height, 0, 0, partWidth, height);
 
-                // Canvas'ı base64 görsel verisine çevir (yüksek kalite JPEG)
                 const dataUrl = canvas.toDataURL('image/jpeg', 1.0);
-
-                // Önizleme ve indirme için HTML elementlerini oluştur
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'grid-item';
 
                 const imgPreview = document.createElement('img');
                 imgPreview.src = dataUrl;
-                
+
                 const downloadLink = document.createElement('a');
                 downloadLink.href = dataUrl;
                 downloadLink.download = `${namePrefix}_parca_${i + 1}.jpg`;
                 downloadLink.className = 'download-btn';
                 downloadLink.innerText = `Parça ${i + 1} İndir`;
 
-                // Elementleri DOM'a ekle
                 itemDiv.appendChild(imgPreview);
                 itemDiv.appendChild(downloadLink);
-                gridPreview.appendChild(itemDiv);
+                document.getElementById('gridPreview').appendChild(itemDiv);
+            }
+            document.getElementById('preview-container').style.display = 'block';
+        }
+
+        // ── 9-grid ───────────────────────────────────────────
+        let nineGridDataUrls = [];
+
+        function process9Grid(img, originalFilename) {
+            const grid9Preview = document.getElementById('grid9Preview');
+            grid9Preview.innerHTML = '';
+            document.getElementById('preview-container').style.display = 'none';
+            nineGridDataUrls = [];
+
+            // For 9-grid we work with a square crop of the image
+            // Each cell is squareCrop/3 × squareCrop/3
+            const cellSize = Math.min(Math.floor(img.width / 3), Math.floor(img.height / 3));
+            const totalW = cellSize * 3;
+            const totalH = cellSize * 3;
+
+            // Center-crop source image to totalW × totalH
+            const srcX = Math.floor((img.width  - totalW) / 2);
+            const srcY = Math.floor((img.height - totalH) / 2);
+
+            const namePrefix = originalFilename.split('.')[0] || 'grid';
+
+            // Generate all 9 cells: row 0 = top, row 2 = bottom
+            // Panel number assignment for Instagram: bottom-left = 1, bottom-right = 3,
+            // top-left = 7, top-right = 9
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 3; col++) {
+                    const panelNum = (2 - row) * 3 + (col + 1); // 7,8,9 | 4,5,6 | 1,2,3
+                    const canvas = document.createElement('canvas');
+                    canvas.width  = cellSize;
+                    canvas.height = cellSize;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(
+                        img,
+                        srcX + col * cellSize, srcY + row * cellSize, cellSize, cellSize,
+                        0, 0, cellSize, cellSize
+                    );
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+                    nineGridDataUrls[panelNum] = { url: dataUrl, name: `${namePrefix}_panel_${panelNum}.jpg` };
+
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'grid9-item';
+
+                    const imgEl = document.createElement('img');
+                    imgEl.src = dataUrl;
+
+                    const numEl = document.createElement('div');
+                    numEl.className = 'panel-num';
+                    numEl.textContent = `Panel ${panelNum}`;
+
+                    itemDiv.appendChild(imgEl);
+                    itemDiv.appendChild(numEl);
+                    grid9Preview.appendChild(itemDiv);
+                }
             }
 
-            // Sonuç alanını görünür yap
-            previewContainer.style.display = 'block';
+            document.getElementById('preview9-container').style.display = 'block';
         }
+
+        document.getElementById('downloadAll9Btn').addEventListener('click', () => {
+            // Download each panel sequentially with a small delay
+            nineGridDataUrls.forEach((item, idx) => {
+                if (!item) return;
+                setTimeout(() => {
+                    const a = document.createElement('a');
+                    a.href = item.url;
+                    a.download = item.name;
+                    a.click();
+                }, (idx - 1) * 300);
+            });
+        });
     </script>
 </body>
 </html>
