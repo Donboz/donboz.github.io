@@ -3,39 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resim</title>
+    <title>Donboz — Ana Sayfa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
     <style>
-        body {
-            margin: 0;
-            height: 100vh;
+        /* Hub sayfasına özel ek stiller */
+        .hub-hero {
+            min-height: 40vh;
             display: flex;
-            flex-direction: column; /* Öğeleri yan yana değil, alt alta dizmesi için eklendi */
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            background-color: #121212; 
+            justify-content: center;
+            text-align: center;
+            padding: 6rem 5% 3rem;
         }
 
-        img {
-            width: 450px; 
-            max-width: 90vw; 
-            height: auto;
+        .hub-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
         }
 
-        /* Eklediğimiz paragraf (p) etiketi için ayarlar */
-        p {
-            color: white; /* Yazıyı beyaz yapar */
-            font-size: 28px; /* Yazı boyutu */
-            font-family: sans-serif; /* Daha düz ve şık bir yazı tipi */
-            margin-top: 20px; /* Resim ile arasına biraz boşluk bırakır */
-            text-align: center; /* Yazıyı tam ortalar */
-            font-weight: bold; /* Yazıyı kalın yapar (isteğe bağlı) */
+        .hub-hero p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 500px;
+        }
+
+        /* Araçlar / Sayfalar Izgarası */
+        .tools-section {
+            padding: 2rem 10% 5rem;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .tool-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 18px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent);
+            box-shadow: 0 8px 30px rgba(2, 255, 35, 0.15);
+        }
+
+        .tool-card .icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(2,255,35,0.15), rgba(0,183,255,0.15));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: var(--accent);
+            border: 1px solid rgba(2, 255, 35, 0.2);
+            transition: 0.3s;
+        }
+
+        .tool-card:hover .icon {
+            background: linear-gradient(135deg, rgba(2,255,35,0.3), rgba(0,183,255,0.3));
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .tool-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .tool-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Yükleniyor ve boş durum */
+        .loading-state,
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .loading-state i {
+            font-size: 2rem;
+            color: var(--accent);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Section başlık (tekrar kullanılabilir) */
+        .tools-section .section-title {
+            margin-bottom: 0;
+        }
+
+        /* Footer override: kısa bilgi */
+        .footer-brand {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .hub-hero h1 { font-size: 2rem; }
+            .tools-section { padding: 2rem 5% 4rem; }
         }
     </style>
 </head>
 <body>
 
-    <img src="imgs/s-l400.jpg" alt="SEXXXXX">
-    <p> Özcan Bey </p>
+    <!-- Arkaplan animasyon katmanı -->
+    <div class="bg-animation"></div>
 
+    <!-- Header -->
+    <header>
+        <span class="logo"><span class="gradient-text">Donboz</span></span>
+        <nav class="nav-menu" id="navMenu">
+            <a href="#tools" class="nav-link">Araçlar</a>
+            <a href="#footer" class="nav-link">İletişim</a>
+        </nav>
+        <div class="menu-toggle" id="menuToggle" aria-label="Menüyü aç/kapat">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hub-hero">
+        <div class="img-container" style="margin-bottom:1rem;">
+            <img src="imgs/s-l400.jpg" alt="Donboz" class="profile-img">
+            <span class="status-badge"><span style="width:8px;height:8px;background:var(--accent);border-radius:50%;display:inline-block;"></span> Aktif</span>
+        </div>
+        <h1><span class="gradient-text">Donboz</span> Hub</h1>
+        <p>Tüm araçlara ve sayfalara tek yerden ulaş.</p>
+    </section>
+
+    <!-- Araçlar -->
+    <main class="tools-section" id="tools">
+        <h2 class="section-title">Sayfalar &amp; Araçlar</h2>
+        <div class="tools-grid" id="toolsGrid">
+            <div class="loading-state">
+                <i class="fa-solid fa-circle-notch"></i>
+                <p style="margin-top:1rem;">Sayfalar yükleniyor…</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="footer-content">
+            <p class="footer-brand">Murat &amp; Özcan Batak</p>
+            <p>Donboz GitHub Pages — Tüm haklar saklıdır.</p>
+        </div>
+        <div class="copyright">
+            <p>&copy; <span id="year"></span> Donboz. Built with ❤️</p>
+        </div>
+    </footer>
+
+    <!-- Yukarı çık butonu -->
+    <a href="#" class="scroll-top" id="scrollTop" aria-label="Yukarı çık">
+        <i class="fa-solid fa-chevron-up"></i>
+    </a>
+
+    <script>
+        // ── Yıl ──────────────────────────────────────────────
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // ── Hamburger Menü ────────────────────────────────────
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu    = document.getElementById('navMenu');
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // ── Yukarı Çık ────────────────────────────────────────
+        const scrollTopBtn = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            scrollTopBtn.classList.toggle('active', window.scrollY > 300);
+        });
+
+        // ── Sayfa İkonları ────────────────────────────────────
+        const PAGE_ICONS = {
+            'banner'     : { icon: 'fa-solid fa-scissors',        desc: 'Instagram banner bölücü aracı' },
+            'default'    : { icon: 'fa-solid fa-file-code',        desc: 'Bir araç veya sayfa' }
+        };
+
+        function getPageMeta(filename) {
+            const key = filename.replace('.html', '').toLowerCase();
+            return PAGE_ICONS[key] || PAGE_ICONS['default'];
+        }
+
+        function friendlyName(filename) {
+            const name = filename.replace('.html', '');
+            return name.charAt(0).toUpperCase() + name.slice(1);
+        }
+
+        // ── GitHub API ile HTML Dosyalarını Otomatik Tespit ───
+        const REPO    = 'Donboz/donboz.github.io';
+        const API_URL = `https://api.github.com/repos/${REPO}/contents/`;
+
+        async function loadPages() {
+            const grid = document.getElementById('toolsGrid');
+            try {
+                const res   = await fetch(API_URL, { headers: { 'Accept': 'application/vnd.github+json' } });
+                if (!res.ok) throw new Error(`GitHub API hatası: ${res.status}`);
+                const files = await res.json();
+
+                const htmlFiles = files.filter(f =>
+                    f.type === 'file' &&
+                    f.name.endsWith('.html') &&
+                    f.name.toLowerCase() !== 'index.html'
+                );
+
+                grid.innerHTML = '';
+
+                if (htmlFiles.length === 0) {
+                    grid.innerHTML = '<div class="empty-state"><i class="fa-solid fa-folder-open" style="font-size:2rem;"></i><p style="margin-top:1rem;">Henüz başka bir sayfa yok.</p></div>';
+                    return;
+                }
+
+                htmlFiles.forEach(file => {
+                    const meta = getPageMeta(file.name);
+                    const card = document.createElement('a');
+                    card.href      = file.name;
+                    card.className = 'tool-card';
+                    card.innerHTML = `
+                        <div class="icon"><i class="${meta.icon}"></i></div>
+                        <h3>${friendlyName(file.name)}</h3>
+                        <p>${meta.desc}</p>
+                    `;
+                    grid.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error(err);
+                grid.innerHTML = `<div class="empty-state"><i class="fa-solid fa-triangle-exclamation" style="font-size:2rem;color:#ff6b6b;"></i><p style="margin-top:1rem;">Sayfalar yüklenemedi.<br><small>${err.message}</small></p></div>`;
+            }
+        }
+
+        loadPages();
+    </script>
 </body>
 </html>
