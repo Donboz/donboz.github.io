@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Kod Oluşturucu — Donboz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        .page-wrapper {
+            min-height: 100vh;
+            padding: 6rem 5% 4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .page-title { font-size: 2.2rem; margin-bottom: 0.4rem; text-align: center; }
+        .page-subtitle { color: var(--text-secondary); margin-bottom: 2.5rem; text-align: center; font-size: 1rem; }
+
+        .tool-box {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 24px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 580px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.4rem;
+        }
+        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .form-label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+
+        textarea, select {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s;
+            resize: vertical;
+        }
+        textarea:focus, select:focus { border-color: var(--accent); }
+        select option { background: #1a1a24; }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+        .upload-zone {
+            border: 2px dashed rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .upload-zone:hover { border-color: var(--accent); color: var(--accent); }
+        .upload-zone input[type="file"] {
+            position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+        }
+        .upload-zone .thumb {
+            width: 40px; height: 40px; object-fit: contain;
+            border-radius: 6px; border: 1px solid var(--accent); display: none;
+        }
+
+        .divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 0; }
+
+        .btn-primary {
+            background: var(--accent); color: #000;
+            border: none; border-radius: 12px;
+            padding: 0.9rem 2rem; font-size: 1rem; font-weight: 700;
+            cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+        }
+        .btn-primary:hover { background: #fff; box-shadow: 0 0 20px var(--accent-glow); }
+
+        .qr-result { display: none; flex-direction: column; align-items: center; gap: 1.4rem; }
+        .qr-result.show { display: flex; }
+
+        .qr-frame {
+            background: #fff; padding: 16px; border-radius: 16px;
+            box-shadow: 0 0 35px var(--accent-glow);
+        }
+        .qr-frame canvas { display: block; }
+
+        .btn-outline {
+            background: transparent; border: 2px solid var(--accent);
+            color: var(--accent); border-radius: 10px;
+            padding: 0.7rem 2rem; font-size: 0.95rem; font-weight: 600;
+            cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .btn-outline:hover { background: var(--accent); color: #000; }
+
+        .back-link {
+            color: var(--text-secondary); text-decoration: none;
+            font-size: 0.88rem; display: flex; align-items: center;
+            gap: 0.4rem; margin-bottom: 1.8rem; transition: color 0.3s;
+        }
+        .back-link:hover { color: var(--accent); }
+
+        @media (max-width: 600px) {
+            .two-col { grid-template-columns: 1fr; }
+            .tool-box { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="bg-animation"></div>
+
+<header>
+    <a href="index.html" class="logo"><span class="gradient-text">Donboz</span></a>
+    <nav class="nav-menu" id="navMenu">
+        <a href="index.html" class="nav-link">Ana Sayfa</a>
+    </nav>
+    <div class="menu-toggle" id="menuToggle">
+        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </div>
+</header>
+
+<div class="page-wrapper">
+    <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Araçlara Dön</a>
+    <h1 class="page-title"><span class="gradient-text">QR Kod</span> Oluşturucu</h1>
+    <p class="page-subtitle">URL veya metin için anında QR kod oluştur, isterseni logonla özelleştir.</p>
+
+    <div class="tool-box">
+        <!-- Text input -->
+        <div class="form-group">
+            <label class="form-label" for="qrText">URL veya Metin</label>
+            <textarea id="qrText" rows="3" placeholder="https://donboz.github.io&#10;veya herhangi bir metin…"></textarea>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Options -->
+        <div class="two-col">
+            <div class="form-group">
+                <label class="form-label" for="qrSize">Boyut</label>
+                <select id="qrSize">
+                    <option value="128">128 × 128 px</option>
+                    <option value="256" selected>256 × 256 px</option>
+                    <option value="512">512 × 512 px</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="qrLevel">Hata Düzeltme</label>
+                <select id="qrLevel">
+                    <option value="L">L — Düşük %7</option>
+                    <option value="M">M — Orta %15</option>
+                    <option value="Q" selected>Q — Yüksek %25</option>
+                    <option value="H">H — Maks %30</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Logo upload -->
+        <div class="form-group">
+            <label class="form-label">Merkeze Logo Ekle <span style="font-weight:400;opacity:.6;">(İsteğe Bağlı)</span></label>
+            <div class="upload-zone" id="logoZone">
+                <input type="file" id="logoInput" accept="image/*">
+                <i class="fa-solid fa-image" style="font-size:1.3rem;flex-shrink:0;"></i>
+                <span id="logoLabel">Logo seçmek için tıkla</span>
+                <img id="logoThumb" class="thumb" alt="Logo önizleme">
+            </div>
+        </div>
+
+        <button class="btn-primary" id="generateBtn">
+            <i class="fa-solid fa-qrcode"></i> QR Kod Oluştur
+        </button>
+
+        <!-- Result -->
+        <div class="qr-result" id="qrResult">
+            <div class="qr-frame" id="qrFrame"></div>
+            <button class="btn-outline" id="downloadBtn">
+                <i class="fa-solid fa-download"></i> PNG Olarak İndir
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ── Hamburger ───────────────────────────────────────────
+    document.getElementById('menuToggle').addEventListener('click', () => {
+        document.getElementById('menuToggle').classList.toggle('active');
+        document.getElementById('navMenu').classList.toggle('active');
+    });
+
+    // ── Logo Upload ─────────────────────────────────────────
+    let logoDataUrl = null;
+    const logoInput  = document.getElementById('logoInput');
+    const logoLabel  = document.getElementById('logoLabel');
+    const logoThumb  = document.getElementById('logoThumb');
+
+    logoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            logoDataUrl = ev.target.result;
+            logoThumb.src = logoDataUrl;
+            logoThumb.style.display = 'block';
+            logoLabel.textContent = file.name;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // ── Generate ────────────────────────────────────────────
+    document.getElementById('generateBtn').addEventListener('click', generateQR);
+
+    function generateQR() {
+        const text = document.getElementById('qrText').value.trim();
+        if (!text) { alert('Lütfen bir URL veya metin girin.'); return; }
+
+        const size = parseInt(document.getElementById('qrSize').value);
+        const levelKey = document.getElementById('qrLevel').value;
+        const levelMap = {
+            L: QRCode.CorrectLevel.L,
+            M: QRCode.CorrectLevel.M,
+            Q: QRCode.CorrectLevel.Q,
+            H: QRCode.CorrectLevel.H
+        };
+
+        // Render QR to hidden staging div, then copy to display canvas
+        const staging = document.createElement('div');
+        staging.style.cssText = 'position:absolute;left:-9999px;top:-9999px;';
+        document.body.appendChild(staging);
+
+        new QRCode(staging, {
+            text: text,
+            width: size,
+            height: size,
+            colorDark: '#000000',
+            colorLight: '#ffffff',
+            correctLevel: levelMap[levelKey]
+        });
+
+        setTimeout(() => {
+            // qrcodejs creates an <img> from the canvas
+            const srcEl = staging.querySelector('img') || staging.querySelector('canvas');
+            if (!srcEl) { document.body.removeChild(staging); return; }
+
+            const displayCanvas = document.createElement('canvas');
+            displayCanvas.width  = size;
+            displayCanvas.height = size;
+            const ctx = displayCanvas.getContext('2d');
+
+            const src = srcEl.tagName === 'IMG' ? srcEl.src : srcEl.toDataURL();
+            const qrImg = new Image();
+            qrImg.onload = () => {
+                ctx.drawImage(qrImg, 0, 0, size, size);
+                if (logoDataUrl) overlayLogo(ctx, logoDataUrl, size);
+
+                const frame = document.getElementById('qrFrame');
+                frame.innerHTML = '';
+                frame.appendChild(displayCanvas);
+                document.getElementById('qrResult').classList.add('show');
+                document.body.removeChild(staging);
+            };
+            qrImg.src = src;
+        }, 200);
+    }
+
+    function overlayLogo(ctx, src, size) {
+        const logoImg = new Image();
+        logoImg.onload = () => {
+            const logoSize = size * 0.22;
+            const pad = 5;
+            const x = (size - logoSize) / 2;
+            const y = (size - logoSize) / 2;
+
+            // White rounded square background
+            ctx.save();
+            ctx.fillStyle = '#ffffff';
+            roundRect(ctx, x - pad, y - pad, logoSize + pad * 2, logoSize + pad * 2, 8);
+            ctx.fill();
+            ctx.restore();
+
+            ctx.drawImage(logoImg, x, y, logoSize, logoSize);
+        };
+        logoImg.src = src;
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+    }
+
+    // ── Download ────────────────────────────────────────────
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+        const canvas = document.getElementById('qrFrame').querySelector('canvas');
+        if (!canvas) return;
+        const link = document.createElement('a');
+        link.download = 'qrcode-donboz.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    });
+</script>
+</body>
+</html>
