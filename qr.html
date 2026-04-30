@@ -111,6 +111,28 @@
         }
         .back-link:hover { color: var(--accent); }
 
+        /* QR type tabs */
+        .type-tabs {
+            display: flex; gap: 0.5rem; background: rgba(255,255,255,0.04);
+            border-radius: 12px; padding: 4px;
+        }
+        .type-tab {
+            flex: 1; padding: 0.6rem; border: none; border-radius: 9px;
+            background: transparent; color: var(--text-secondary);
+            font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 600;
+            cursor: pointer; transition: 0.25s; display: flex; align-items: center;
+            justify-content: center; gap: 0.4rem;
+        }
+        .type-tab.active {
+            background: var(--accent); color: #000;
+        }
+
+        /* Image QR section */
+        .img-qr-section { display: none; flex-direction: column; gap: 1.4rem; }
+        .img-qr-section.show { display: flex; }
+        .text-qr-section { display: flex; flex-direction: column; gap: 1.4rem; }
+        .text-qr-section.hide { display: none; }
+
         @media (max-width: 600px) {
             .two-col { grid-template-columns: 1fr; }
             .tool-box { padding: 1.5rem; }
@@ -133,59 +155,123 @@
 <div class="page-wrapper">
     <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Araçlara Dön</a>
     <h1 class="page-title"><span class="gradient-text">QR Kod</span> Oluşturucu</h1>
-    <p class="page-subtitle">URL veya metin için anında QR kod oluştur, isterseni logonla özelleştir.</p>
+    <p class="page-subtitle">URL, metin veya resim için anında QR kod oluştur.</p>
 
     <div class="tool-box">
-        <!-- Text input -->
-        <div class="form-group">
-            <label class="form-label" for="qrText">URL veya Metin</label>
-            <textarea id="qrText" rows="3" placeholder="https://donboz.github.io&#10;veya herhangi bir metin…"></textarea>
+        <!-- Type tabs -->
+        <div class="type-tabs">
+            <button class="type-tab active" id="tabText"><i class="fa-solid fa-font"></i> Metin / URL</button>
+            <button class="type-tab" id="tabImage"><i class="fa-solid fa-image"></i> Resim QR</button>
         </div>
 
-        <hr class="divider">
-
-        <!-- Options -->
-        <div class="two-col">
+        <!-- ── Metin / URL Section ── -->
+        <div class="text-qr-section" id="textQrSection">
+            <!-- Text input -->
             <div class="form-group">
-                <label class="form-label" for="qrSize">Boyut</label>
-                <select id="qrSize">
-                    <option value="128">128 × 128 px</option>
-                    <option value="256" selected>256 × 256 px</option>
-                    <option value="512">512 × 512 px</option>
-                </select>
+                <label class="form-label" for="qrText">URL veya Metin</label>
+                <textarea id="qrText" rows="3" placeholder="https://donboz.github.io&#10;veya herhangi bir metin…"></textarea>
             </div>
+
+            <hr class="divider">
+
+            <!-- Options -->
+            <div class="two-col">
+                <div class="form-group">
+                    <label class="form-label" for="qrSize">Boyut</label>
+                    <select id="qrSize">
+                        <option value="128">128 × 128 px</option>
+                        <option value="256" selected>256 × 256 px</option>
+                        <option value="512">512 × 512 px</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="qrLevel">Hata Düzeltme</label>
+                    <select id="qrLevel">
+                        <option value="L">L — Düşük %7</option>
+                        <option value="M">M — Orta %15</option>
+                        <option value="Q" selected>Q — Yüksek %25</option>
+                        <option value="H">H — Maks %30</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Logo upload -->
             <div class="form-group">
-                <label class="form-label" for="qrLevel">Hata Düzeltme</label>
-                <select id="qrLevel">
-                    <option value="L">L — Düşük %7</option>
-                    <option value="M">M — Orta %15</option>
-                    <option value="Q" selected>Q — Yüksek %25</option>
-                    <option value="H">H — Maks %30</option>
-                </select>
+                <label class="form-label">Merkeze Logo Ekle <span style="font-weight:400;opacity:.6;">(İsteğe Bağlı)</span></label>
+                <div class="upload-zone" id="logoZone">
+                    <input type="file" id="logoInput" accept="image/*">
+                    <i class="fa-solid fa-image" style="font-size:1.3rem;flex-shrink:0;"></i>
+                    <span id="logoLabel">Logo seçmek için tıkla</span>
+                    <img id="logoThumb" class="thumb" alt="Logo önizleme">
+                </div>
             </div>
-        </div>
 
-        <!-- Logo upload -->
-        <div class="form-group">
-            <label class="form-label">Merkeze Logo Ekle <span style="font-weight:400;opacity:.6;">(İsteğe Bağlı)</span></label>
-            <div class="upload-zone" id="logoZone">
-                <input type="file" id="logoInput" accept="image/*">
-                <i class="fa-solid fa-image" style="font-size:1.3rem;flex-shrink:0;"></i>
-                <span id="logoLabel">Logo seçmek için tıkla</span>
-                <img id="logoThumb" class="thumb" alt="Logo önizleme">
-            </div>
-        </div>
-
-        <button class="btn-primary" id="generateBtn">
-            <i class="fa-solid fa-qrcode"></i> QR Kod Oluştur
-        </button>
-
-        <!-- Result -->
-        <div class="qr-result" id="qrResult">
-            <div class="qr-frame" id="qrFrame"></div>
-            <button class="btn-outline" id="downloadBtn">
-                <i class="fa-solid fa-download"></i> PNG Olarak İndir
+            <button class="btn-primary" id="generateBtn">
+                <i class="fa-solid fa-qrcode"></i> QR Kod Oluştur
             </button>
+
+            <!-- Result -->
+            <div class="qr-result" id="qrResult">
+                <div class="qr-frame" id="qrFrame"></div>
+                <button class="btn-outline" id="downloadBtn">
+                    <i class="fa-solid fa-download"></i> PNG Olarak İndir
+                </button>
+            </div>
+        </div>
+
+        <!-- ── Resim QR Section ── -->
+        <div class="img-qr-section" id="imgQrSection">
+            <p style="font-size:0.83rem;color:var(--text-secondary);margin:0;">
+                Bir resim yükle — QR kodun arka planında görünür. Taranabilirliği korumak için yüksek hata düzeltme kullanılır.
+            </p>
+
+            <!-- Image upload -->
+            <div class="form-group">
+                <label class="form-label">Arka Plan Resmi</label>
+                <div class="upload-zone" id="bgImageZone">
+                    <input type="file" id="bgImageInput" accept="image/*">
+                    <i class="fa-solid fa-photo-film" style="font-size:1.3rem;flex-shrink:0;"></i>
+                    <span id="bgImageLabel">Resim seçmek için tıkla</span>
+                    <img id="bgImageThumb" class="thumb" alt="Resim önizleme">
+                </div>
+            </div>
+
+            <!-- QR content -->
+            <div class="form-group">
+                <label class="form-label" for="imgQrText">QR İçeriği (URL veya Metin)</label>
+                <textarea id="imgQrText" rows="2" placeholder="https://donboz.github.io"></textarea>
+            </div>
+
+            <div class="two-col">
+                <div class="form-group">
+                    <label class="form-label" for="imgQrSize">Boyut</label>
+                    <select id="imgQrSize">
+                        <option value="256">256 × 256 px</option>
+                        <option value="400" selected>400 × 400 px</option>
+                        <option value="512">512 × 512 px</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="imgQrOpacity">QR Opaklığı</label>
+                    <select id="imgQrOpacity">
+                        <option value="0.65">%65 — Resim Baskın</option>
+                        <option value="0.80" selected>%80 — Dengeli</option>
+                        <option value="0.95">%95 — QR Baskın</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="imgGenerateBtn">
+                <i class="fa-solid fa-qrcode"></i> Resim QR Oluştur
+            </button>
+
+            <!-- Result -->
+            <div class="qr-result" id="imgQrResult">
+                <div class="qr-frame" id="imgQrFrame"></div>
+                <button class="btn-outline" id="imgDownloadBtn">
+                    <i class="fa-solid fa-download"></i> PNG Olarak İndir
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -197,7 +283,21 @@
         document.getElementById('navMenu').classList.toggle('active');
     });
 
-    // ── Logo Upload ─────────────────────────────────────────
+    // ── Tab Switching ────────────────────────────────────────
+    document.getElementById('tabText').addEventListener('click', () => {
+        document.getElementById('tabText').classList.add('active');
+        document.getElementById('tabImage').classList.remove('active');
+        document.getElementById('textQrSection').classList.remove('hide');
+        document.getElementById('imgQrSection').classList.remove('show');
+    });
+    document.getElementById('tabImage').addEventListener('click', () => {
+        document.getElementById('tabImage').classList.add('active');
+        document.getElementById('tabText').classList.remove('active');
+        document.getElementById('textQrSection').classList.add('hide');
+        document.getElementById('imgQrSection').classList.add('show');
+    });
+
+    // ── Logo Upload (Text QR) ────────────────────────────────
     let logoDataUrl = null;
     const logoInput  = document.getElementById('logoInput');
     const logoLabel  = document.getElementById('logoLabel');
@@ -216,7 +316,23 @@
         reader.readAsDataURL(file);
     });
 
-    // ── Generate ────────────────────────────────────────────
+    // ── Background Image Upload (Image QR) ──────────────────
+    let bgImageDataUrl = null;
+    document.getElementById('bgImageInput').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            bgImageDataUrl = ev.target.result;
+            const thumb = document.getElementById('bgImageThumb');
+            thumb.src = bgImageDataUrl;
+            thumb.style.display = 'block';
+            document.getElementById('bgImageLabel').textContent = file.name;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // ── Generate QR (Text/URL) ───────────────────────────────
     document.getElementById('generateBtn').addEventListener('click', generateQR);
 
     function generateQR() {
@@ -232,7 +348,6 @@
             H: QRCode.CorrectLevel.H
         };
 
-        // Render QR to hidden staging div, then copy to display canvas
         const staging = document.createElement('div');
         staging.style.cssText = 'position:absolute;left:-9999px;top:-9999px;';
         document.body.appendChild(staging);
@@ -247,7 +362,6 @@
         });
 
         setTimeout(() => {
-            // qrcodejs creates an <img> from the canvas
             const srcEl = staging.querySelector('img') || staging.querySelector('canvas');
             if (!srcEl) { document.body.removeChild(staging); return; }
 
@@ -280,7 +394,6 @@
             const x = (size - logoSize) / 2;
             const y = (size - logoSize) / 2;
 
-            // White rounded square background
             ctx.save();
             ctx.fillStyle = '#ffffff';
             roundRect(ctx, x - pad, y - pad, logoSize + pad * 2, logoSize + pad * 2, 8);
@@ -306,12 +419,98 @@
         ctx.closePath();
     }
 
-    // ── Download ────────────────────────────────────────────
+    // ── Download (Text QR) ───────────────────────────────────
     document.getElementById('downloadBtn').addEventListener('click', () => {
         const canvas = document.getElementById('qrFrame').querySelector('canvas');
         if (!canvas) return;
         const link = document.createElement('a');
         link.download = 'qrcode-donboz.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    });
+
+    // ══════════════════════════════════════════════════════════
+    // Image QR Generation (artistic: image background + QR overlay)
+    // ══════════════════════════════════════════════════════════
+    document.getElementById('imgGenerateBtn').addEventListener('click', generateImageQR);
+
+    function generateImageQR() {
+        const text = document.getElementById('imgQrText').value.trim();
+        if (!text) { alert('Lütfen QR içeriği için bir URL veya metin girin.'); return; }
+        if (!bgImageDataUrl) { alert('Lütfen bir arka plan resmi seçin.'); return; }
+
+        const size    = parseInt(document.getElementById('imgQrSize').value);
+        const opacity = parseFloat(document.getElementById('imgQrOpacity').value);
+
+        // 1. Generate QR bitmap (always H level for max recoverability)
+        const staging = document.createElement('div');
+        staging.style.cssText = 'position:absolute;left:-9999px;top:-9999px;';
+        document.body.appendChild(staging);
+
+        new QRCode(staging, {
+            text: text,
+            width: size,
+            height: size,
+            colorDark: '#000000',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        setTimeout(() => {
+            const srcEl = staging.querySelector('img') || staging.querySelector('canvas');
+            if (!srcEl) { document.body.removeChild(staging); return; }
+
+            const qrSrc = srcEl.tagName === 'IMG' ? srcEl.src : srcEl.toDataURL();
+            document.body.removeChild(staging);
+
+            const qrImg = new Image();
+            qrImg.onload = () => {
+                const bgImg = new Image();
+                bgImg.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width  = size;
+                    canvas.height = size;
+                    const ctx = canvas.getContext('2d');
+
+                    // Step 1: Draw background image (cover-fill)
+                    const scale = Math.max(size / bgImg.width, size / bgImg.height);
+                    const sw = bgImg.width  * scale;
+                    const sh = bgImg.height * scale;
+                    ctx.drawImage(bgImg, (size - sw) / 2, (size - sh) / 2, sw, sh);
+
+                    // Step 2: Overlay QR with 'multiply' blend mode
+                    // White QR pixels × image = image (transparent effect)
+                    // Black QR pixels × image = near-black (QR pattern visible)
+                    ctx.save();
+                    ctx.globalCompositeOperation = 'multiply';
+                    ctx.globalAlpha = opacity;
+                    ctx.drawImage(qrImg, 0, 0, size, size);
+                    ctx.restore();
+
+                    // Step 3: Darken the QR modules a bit more on top (darken blend)
+                    ctx.save();
+                    ctx.globalCompositeOperation = 'darken';
+                    ctx.globalAlpha = opacity * 0.5;
+                    ctx.drawImage(qrImg, 0, 0, size, size);
+                    ctx.restore();
+
+                    const frame = document.getElementById('imgQrFrame');
+                    frame.innerHTML = '';
+                    frame.appendChild(canvas);
+                    document.getElementById('imgQrResult').classList.add('show');
+                };
+                bgImg.src = bgImageDataUrl;
+            };
+            qrImg.src = qrSrc;
+        }, 200);
+    }
+
+    // ── Download (Image QR) ──────────────────────────────────
+    document.getElementById('imgDownloadBtn').addEventListener('click', () => {
+        const canvas = document.getElementById('imgQrFrame').querySelector('canvas');
+        if (!canvas) return;
+        const link = document.createElement('a');
+        link.download = 'resim-qr-donboz.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
     });

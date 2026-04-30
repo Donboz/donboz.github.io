@@ -152,6 +152,50 @@
             font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
         }
 
+        /* Image layers panel */
+        .layers-list { display: flex; flex-direction: column; gap: 0.8rem; }
+        .layer-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; padding: 0.9rem;
+            display: flex; flex-direction: column; gap: 0.5rem;
+        }
+        .layer-card-header {
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .layer-card-title {
+            font-size: 0.8rem; font-weight: 600; color: var(--accent);
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+        .btn-remove-layer {
+            background: transparent; border: none; color: rgba(255,100,100,0.7);
+            cursor: pointer; font-size: 0.9rem; padding: 2px 6px; border-radius: 4px;
+            transition: 0.2s;
+        }
+        .btn-remove-layer:hover { color: #ff6b6b; background: rgba(255,100,100,0.1); }
+        .layer-upload {
+            border: 2px dashed rgba(255,255,255,0.15); border-radius: 8px;
+            padding: 0.6rem; text-align: center; cursor: pointer;
+            transition: 0.3s; color: var(--text-secondary); font-size: 0.78rem;
+            position: relative;
+        }
+        .layer-upload:hover { border-color: var(--accent); color: var(--accent); }
+        .layer-upload input[type="file"] {
+            position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+        }
+        .layer-thumb {
+            max-width: 44px; max-height: 44px; border-radius: 4px;
+            border: 1px solid var(--accent); margin: 0.3rem auto 0; display: none; object-fit: contain;
+        }
+        .btn-add-layer {
+            background: rgba(2,255,35,0.08); border: 1px dashed var(--accent);
+            color: var(--accent); border-radius: 8px; padding: 0.55rem 1rem;
+            font-size: 0.82rem; cursor: pointer; transition: 0.3s; width: 100%;
+            font-family: 'Poppins', sans-serif; display: flex; align-items: center;
+            justify-content: center; gap: 0.4rem;
+        }
+        .btn-add-layer:hover { background: rgba(2,255,35,0.18); }
+
         @media (max-width: 860px) {
             .main-layout { grid-template-columns: 1fr; }
             .scene { width: 280px; height: 330px; }
@@ -195,40 +239,19 @@
 
             <hr class="divider">
             <h3><i class="fa-solid fa-palette"></i> Renk</h3>
-            <div class="color-row" id="colorSwatches">
-                <!-- filled by JS -->
-            </div>
+            <div class="color-row" id="colorSwatches"></div>
             <div class="custom-color-row">
                 <input type="color" id="customColor" value="#1a1a2e" title="Özel renk seç">
                 <span>Özel renk</span>
             </div>
 
             <hr class="divider">
-            <h3><i class="fa-solid fa-image"></i> Logo</h3>
-            <div class="upload-zone" id="logoZone">
-                <input type="file" id="logoInput" accept="image/*">
-                <i class="fa-solid fa-upload" style="font-size:1.2rem;display:block;margin-bottom:0.3rem;"></i>
-                <span id="logoZoneLabel">Logo yüklemek için tıkla</span>
-                <img id="logoThumb" class="thumb" alt="Logo">
-            </div>
+            <h3><i class="fa-solid fa-images"></i> Görseller</h3>
+            <div class="layers-list" id="layersList"></div>
+            <button class="btn-add-layer" id="addLayerBtn"><i class="fa-solid fa-plus"></i> Görsel Ekle</button>
 
-            <div>
-                <label class="form-label">Logo Boyutu</label>
-                <div class="slider-row">
-                    <input type="range" id="logoScale" min="10" max="80" value="35">
-                    <span id="logoScaleVal">35%</span>
-                </div>
-            </div>
-
-            <div>
-                <label class="form-label">Dikey Konum</label>
-                <div class="slider-row">
-                    <input type="range" id="logoPosY" min="-30" max="30" value="0">
-                    <span id="logoPosYVal">0</span>
-                </div>
-            </div>
-
-            <button class="btn-reset" id="resetBtn"><i class="fa-solid fa-rotate-left"></i> Sıfırla</button>
+            <hr class="divider">
+            <button class="btn-reset" id="resetBtn"><i class="fa-solid fa-rotate-left"></i> Tümünü Sıfırla</button>
         </div>
 
         <!-- Viewer -->
@@ -257,11 +280,12 @@ document.getElementById('menuToggle').addEventListener('click', () => {
 });
 
 // ── State ───────────────────────────────────────────
-let shirtColor  = '#1a1a2e';
-let logoImg     = null;
-let logoScale   = 0.35;
-let logoPosY    = 0;
+let shirtColor   = '#1a1a2e';
 let clothingType = 'tshirt';
+
+// Image layers: { img, scale, posX, posY }
+let layers = [];
+let layerIdCounter = 0;
 
 let rotY = 0, rotX = 0;
 let isDragging = false;
@@ -302,42 +326,126 @@ document.getElementById('clothingType').addEventListener('change', (e) => {
     redraw();
 });
 
-// ── Logo upload ─────────────────────────────────────
-document.getElementById('logoInput').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-        const img = new Image();
-        img.onload = () => {
-            logoImg = img;
-            document.getElementById('logoThumb').src = ev.target.result;
-            document.getElementById('logoThumb').style.display = 'block';
-            document.getElementById('logoZoneLabel').textContent = file.name;
-            redraw();
-        };
-        img.src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
-});
+// ── Layer management ────────────────────────────────
+function createLayerCard(layerId) {
+    const layer = layers.find(l => l.id === layerId);
+    if (!layer) return;
 
-// ── Sliders ─────────────────────────────────────────
-document.getElementById('logoScale').addEventListener('input', (e) => {
-    logoScale = parseInt(e.target.value) / 100;
-    document.getElementById('logoScaleVal').textContent = e.target.value + '%';
-    redraw();
-});
-document.getElementById('logoPosY').addEventListener('input', (e) => {
-    logoPosY = parseInt(e.target.value);
-    document.getElementById('logoPosYVal').textContent = e.target.value;
-    redraw();
+    const card = document.createElement('div');
+    card.className = 'layer-card';
+    card.id = `layer-card-${layerId}`;
+    card.innerHTML = `
+        <div class="layer-card-header">
+            <span class="layer-card-title"><i class="fa-solid fa-image"></i> Görsel ${layerId}</span>
+            <button class="btn-remove-layer" data-id="${layerId}" title="Kaldır"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="layer-upload" id="upload-zone-${layerId}">
+            <input type="file" accept="image/*" data-id="${layerId}">
+            <i class="fa-solid fa-upload" style="font-size:1rem;display:block;margin-bottom:0.2rem;"></i>
+            <span id="upload-label-${layerId}">Görsel seçmek için tıkla</span>
+            <img id="upload-thumb-${layerId}" class="layer-thumb" alt="Önizleme">
+        </div>
+        <label class="form-label" style="margin-top:0.3rem;">Boyut</label>
+        <div class="slider-row">
+            <input type="range" data-id="${layerId}" data-prop="scale" min="5" max="90" value="${Math.round(layer.scale * 100)}">
+            <span id="scale-val-${layerId}">${Math.round(layer.scale * 100)}%</span>
+        </div>
+        <label class="form-label">Yatay Konum</label>
+        <div class="slider-row">
+            <input type="range" data-id="${layerId}" data-prop="posX" min="-40" max="40" value="${layer.posX}">
+            <span id="posX-val-${layerId}">${layer.posX}</span>
+        </div>
+        <label class="form-label">Dikey Konum</label>
+        <div class="slider-row">
+            <input type="range" data-id="${layerId}" data-prop="posY" min="-35" max="35" value="${layer.posY}">
+            <span id="posY-val-${layerId}">${layer.posY}</span>
+        </div>
+    `;
+
+    // File input handler
+    card.querySelector('input[type="file"]').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const img = new Image();
+            img.onload = () => {
+                const l = layers.find(x => x.id === layerId);
+                if (l) { l.img = img; redraw(); }
+                const thumb = document.getElementById(`upload-thumb-${layerId}`);
+                thumb.src = ev.target.result;
+                thumb.style.display = 'block';
+                document.getElementById(`upload-label-${layerId}`).textContent = file.name;
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // Slider handlers
+    card.querySelectorAll('input[type="range"]').forEach(slider => {
+        slider.addEventListener('input', (e) => {
+            const id   = parseInt(e.target.dataset.id);
+            const prop = e.target.dataset.prop;
+            const val  = parseInt(e.target.value);
+            const l    = layers.find(x => x.id === id);
+            if (!l) return;
+            if (prop === 'scale') {
+                l.scale = val / 100;
+                document.getElementById(`scale-val-${id}`).textContent = val + '%';
+            } else if (prop === 'posX') {
+                l.posX = val;
+                document.getElementById(`posX-val-${id}`).textContent = val;
+            } else if (prop === 'posY') {
+                l.posY = val;
+                document.getElementById(`posY-val-${id}`).textContent = val;
+            }
+            redraw();
+        });
+    });
+
+    // Remove button
+    card.querySelector('.btn-remove-layer').addEventListener('click', (e) => {
+        const id = parseInt(e.currentTarget.dataset.id);
+        layers = layers.filter(l => l.id !== id);
+        document.getElementById(`layer-card-${id}`)?.remove();
+        redraw();
+    });
+
+    document.getElementById('layersList').appendChild(card);
+}
+
+document.getElementById('addLayerBtn').addEventListener('click', () => {
+    if (layers.length >= 5) { alert('En fazla 5 görsel ekleyebilirsiniz.'); return; }
+    layerIdCounter++;
+    layers.push({ id: layerIdCounter, img: null, scale: 0.35, posX: 0, posY: 0 });
+    createLayerCard(layerIdCounter);
 });
 
 // ── Reset ───────────────────────────────────────────
 document.getElementById('resetBtn').addEventListener('click', () => {
+    // Reset 3D rotation
     rotY = 0; rotX = 0;
     document.getElementById('card').style.transform = 'rotateY(0deg) rotateX(0deg)';
     updateFaceBadge();
+
+    // Reset all layer positions/scales to defaults
+    layers.forEach(l => {
+        l.scale = 0.35; l.posX = 0; l.posY = 0;
+        const scaleEl = document.getElementById(`scale-val-${l.id}`);
+        const scaleSlider = document.querySelector(`[data-id="${l.id}"][data-prop="scale"]`);
+        const posXEl = document.getElementById(`posX-val-${l.id}`);
+        const posXSlider = document.querySelector(`[data-id="${l.id}"][data-prop="posX"]`);
+        const posYEl = document.getElementById(`posY-val-${l.id}`);
+        const posYSlider = document.querySelector(`[data-id="${l.id}"][data-prop="posY"]`);
+        if (scaleEl) scaleEl.textContent = '35%';
+        if (scaleSlider) scaleSlider.value = 35;
+        if (posXEl) posXEl.textContent = '0';
+        if (posXSlider) posXSlider.value = 0;
+        if (posYEl) posYEl.textContent = '0';
+        if (posYSlider) posYSlider.value = 0;
+    });
+    redraw();
 });
 
 // ══════════════════════════════════════════════════
@@ -345,7 +453,6 @@ document.getElementById('resetBtn').addEventListener('click', () => {
 // ══════════════════════════════════════════════════
 const W = 320, H = 380;
 
-// T-shirt path points (normalized 0–1)
 const PATHS = {
     tshirt: {
         front: (ctx, w, h) => {
@@ -379,7 +486,6 @@ const PATHS = {
     },
     sweatshirt: {
         front: (ctx, w, h) => {
-            // wider body, ribbed hem
             ctx.beginPath();
             ctx.moveTo(0.14*w, 0);
             ctx.lineTo(0.34*w, 0);
@@ -410,16 +516,15 @@ const PATHS = {
     },
     hoodie: {
         front: (ctx, w, h) => {
-            // body (same as sweatshirt but with hood at top)
             ctx.beginPath();
-            ctx.moveTo(0.14*w, 0.12*h);  // hood base left
-            ctx.lineTo(0.86*w, 0.12*h);  // hood base right
-            ctx.lineTo(w,      0.26*h);  // sleeve right
-            ctx.lineTo(0.80*w, 0.32*h);  // armhole right
-            ctx.lineTo(0.80*w, 0.92*h);  // hem right
-            ctx.lineTo(0.20*w, 0.92*h);  // hem left
-            ctx.lineTo(0.20*w, 0.32*h);  // armhole left
-            ctx.lineTo(0,      0.26*h);  // sleeve left
+            ctx.moveTo(0.14*w, 0.12*h);
+            ctx.lineTo(0.86*w, 0.12*h);
+            ctx.lineTo(w,      0.26*h);
+            ctx.lineTo(0.80*w, 0.32*h);
+            ctx.lineTo(0.80*w, 0.92*h);
+            ctx.lineTo(0.20*w, 0.92*h);
+            ctx.lineTo(0.20*w, 0.32*h);
+            ctx.lineTo(0,      0.26*h);
             ctx.closePath();
         },
         back: (ctx, w, h) => {
@@ -445,7 +550,6 @@ function hexToRgb(hex) {
 }
 
 function shadeColor(hex, factor) {
-    // factor < 1 = darker, > 1 = lighter
     const {r,g,b} = hexToRgb(hex);
     const clamp = v => Math.min(255, Math.max(0, Math.round(v)));
     return `rgb(${clamp(r*factor)},${clamp(g*factor)},${clamp(b*factor)})`;
@@ -459,12 +563,10 @@ function drawShirt(canvas, isFront) {
     const pathDef = PATHS[clothingType];
     const pathFn  = isFront ? pathDef.front : pathDef.back;
 
-    // --- Base fill ---
     pathFn(ctx, w, h);
     ctx.fillStyle = shirtColor;
     ctx.fill();
 
-    // --- Subtle left-shadow gradient for depth ---
     pathFn(ctx, w, h);
     const shadGrad = ctx.createLinearGradient(0, 0, w * 0.4, 0);
     shadGrad.addColorStop(0, 'rgba(0,0,0,0.18)');
@@ -472,7 +574,6 @@ function drawShirt(canvas, isFront) {
     ctx.fillStyle = shadGrad;
     ctx.fill();
 
-    // --- Right highlight ---
     pathFn(ctx, w, h);
     const hiGrad = ctx.createLinearGradient(w * 0.6, 0, w, 0);
     hiGrad.addColorStop(0, 'rgba(0,0,0,0)');
@@ -480,7 +581,6 @@ function drawShirt(canvas, isFront) {
     ctx.fillStyle = hiGrad;
     ctx.fill();
 
-    // --- Top highlight stripe ---
     pathFn(ctx, w, h);
     const topHi = ctx.createLinearGradient(0, 0, 0, h * 0.3);
     topHi.addColorStop(0, 'rgba(255,255,255,0.10)');
@@ -488,31 +588,17 @@ function drawShirt(canvas, isFront) {
     ctx.fillStyle = topHi;
     ctx.fill();
 
-    // --- Stroke (outline) ---
     pathFn(ctx, w, h);
     ctx.strokeStyle = 'rgba(0,0,0,0.3)';
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // --- Hoodie hood ---
-    if (clothingType === 'hoodie' && isFront) {
-        drawHoodFront(ctx, w, h);
-    }
-    if (clothingType === 'hoodie' && !isFront) {
-        drawHoodBack(ctx, w, h);
-    }
+    if (clothingType === 'hoodie' && isFront) drawHoodFront(ctx, w, h);
+    if (clothingType === 'hoodie' && !isFront) drawHoodBack(ctx, w, h);
+    if (clothingType !== 'tshirt') drawRibHem(ctx, w, h);
 
-    // --- Sweatshirt / hoodie rib hem ---
-    if (clothingType !== 'tshirt') {
-        drawRibHem(ctx, w, h);
-    }
+    if (isFront) drawAllLayers(ctx, w, h);
 
-    // --- Logo (front only) ---
-    if (isFront && logoImg) {
-        drawLogo(ctx, w, h);
-    }
-
-    // --- Seam lines for realism ---
     drawSeams(ctx, w, h, isFront);
 }
 
@@ -520,7 +606,6 @@ function drawHoodFront(ctx, w, h) {
     const {r,g,b} = hexToRgb(shirtColor);
     const lighterColor = `rgb(${Math.min(255,r+20)},${Math.min(255,g+20)},${Math.min(255,b+20)})`;
 
-    // Hood shape (two arcs meeting at top)
     ctx.beginPath();
     ctx.moveTo(0.14*w, 0.12*h);
     ctx.lineTo(0.27*w, 0.12*h);
@@ -532,7 +617,6 @@ function drawHoodFront(ctx, w, h) {
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    // Hood fill
     ctx.beginPath();
     ctx.moveTo(0.27*w, 0.12*h);
     ctx.quadraticCurveTo(0.22*w, 0, 0.36*w, 0);
@@ -545,7 +629,6 @@ function drawHoodFront(ctx, w, h) {
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    // Kangaroo pocket
     ctx.beginPath();
     ctx.roundRect(0.33*w, 0.62*h, 0.34*w, 0.14*h, 6);
     ctx.strokeStyle = 'rgba(0,0,0,0.2)';
@@ -554,7 +637,6 @@ function drawHoodFront(ctx, w, h) {
     ctx.fillStyle = 'rgba(0,0,0,0.07)';
     ctx.fill();
 
-    // Drawstring
     ctx.beginPath();
     ctx.moveTo(0.42*w, 0.12*h);
     ctx.lineTo(0.45*w, 0.36*h);
@@ -575,8 +657,7 @@ function drawHoodBack(ctx, w, h) {
 }
 
 function drawRibHem(ctx, w, h) {
-    const ribTop = 0.92 * h;
-    const ribBot = h;
+    const ribTop = 0.92 * h, ribBot = h;
     ctx.save();
     ctx.beginPath();
     ctx.rect(0.20*w, ribTop, 0.60*w, ribBot - ribTop);
@@ -597,9 +678,7 @@ function drawSeams(ctx, w, h, isFront) {
     ctx.setLineDash([3, 4]);
     ctx.strokeStyle = 'rgba(0,0,0,0.15)';
     ctx.lineWidth = 1;
-
     if (isFront) {
-        // shoulder seams
         ctx.beginPath();
         ctx.moveTo(0.22*w, 0.23*h);
         ctx.lineTo(0.35*w, 0.07*h);
@@ -611,24 +690,25 @@ function drawSeams(ctx, w, h, isFront) {
     ctx.restore();
 }
 
-function drawLogo(ctx, w, h) {
-    const maxW   = w * 0.56 * logoScale;
-    const aspect = logoImg.width / logoImg.height;
-    const lw     = maxW;
-    const lh     = lw / aspect;
-
-    // Center horizontally, put on chest area (~38% from top)
+function drawAllLayers(ctx, w, h) {
     const startY = clothingType === 'hoodie' ? 0.35 : 0.28;
-    const lx = (w - lw) / 2;
-    const ly = h * startY + logoPosY * (h * 0.01);
-
-    // Clip to shirt shape so logo doesn't overflow
     const pathFn = PATHS[clothingType].front;
-    ctx.save();
-    pathFn(ctx, w, h);
-    ctx.clip();
-    ctx.drawImage(logoImg, lx, ly, lw, lh);
-    ctx.restore();
+
+    layers.forEach(layer => {
+        if (!layer.img) return;
+        const maxW   = w * 0.56 * layer.scale;
+        const aspect = layer.img.width / layer.img.height;
+        const lw     = maxW;
+        const lh     = lw / aspect;
+        const lx     = (w - lw) / 2 + layer.posX * (w * 0.01);
+        const ly     = h * startY + layer.posY * (h * 0.01);
+
+        ctx.save();
+        pathFn(ctx, w, h);
+        ctx.clip();
+        ctx.drawImage(layer.img, lx, ly, lw, lh);
+        ctx.restore();
+    });
 }
 
 function redraw() {
@@ -655,7 +735,6 @@ function updateFaceBadge() {
     document.getElementById('faceBadge').textContent = isFront ? 'Ön Yüz' : 'Arka Yüz';
 }
 
-// Mouse
 scene.addEventListener('mousedown', (e) => {
     isDragging = true; lastX = e.clientX; lastY = e.clientY; e.preventDefault();
 });
@@ -669,7 +748,6 @@ document.addEventListener('mousemove', (e) => {
 });
 document.addEventListener('mouseup', () => { isDragging = false; });
 
-// Touch
 scene.addEventListener('touchstart', (e) => {
     isDragging = true;
     lastX = e.touches[0].clientX;
